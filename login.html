@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BIMAO OS — Authentification sécurisée</title>
+  <script>document.documentElement.classList.add('bma-js')</script>
+  <link rel="stylesheet" href="css/tailwind.build.css">
+  <link rel="stylesheet" href="css/custom.css">
+  <style>
+    body {
+      background-color: #020617;
+      background-image: linear-gradient(rgba(2,6,23,0.2), rgba(2,6,23,0.2)), url('assets/login-bg.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      min-height: 100vh;
+    }
+    .auth-card {
+      background-color: rgba(10, 15, 30, 0.82);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 25px 70px -15px rgba(0, 0, 0, 0.65);
+    }
+    .auth-input {
+      background-color: rgba(2, 6, 23, 0.55);
+      border: 1px solid #334155;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .auth-input:focus {
+      outline: none;
+      border-color: var(--bimao-blue-text);
+      box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15);
+    }
+    .auth-divider {
+      width: 1px;
+      background: linear-gradient(180deg, transparent, rgba(255,255,255,0.12), transparent);
+    }
+    /* css/custom.css sets a plain `button { background-color: ... }` rule outside any
+       @layer, which beats Tailwind v4's layered .bg-[#00007B] utility regardless of
+       specificity — cascade layers always lose to unlayered styles. Override explicitly. */
+    #login-form button[type="submit"] {
+      background-color: #00007B;
+    }
+    #login-form button[type="submit"]:hover {
+      background-color: #0000a0;
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen text-[#f8fafc] relative">
+
+  <!-- Brand mark -->
+  <div class="p-8">
+    <a href="login.html" class="inline-flex items-center space-x-3">
+      <div class="w-9 h-9 bg-white rounded-lg flex items-center justify-center p-1.5 shadow-lg shadow-black/40 shrink-0">
+        <img src="assets/logo.png" alt="BIMAO" class="w-full h-full object-contain">
+      </div>
+      <span class="font-bold text-lg tracking-tight text-white">BIMAO</span>
+    </a>
+  </div>
+
+  <!-- Auth card -->
+  <div class="flex-1 flex items-center justify-center px-4 pb-16">
+    <div class="auth-card w-full max-w-4xl rounded-2xl p-10 sm:p-12">
+      <div class="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-10">
+
+        <!-- Left: credentials -->
+        <div class="flex flex-col justify-center">
+          <h1 class="text-2xl font-bold text-white tracking-tight">Authentification sécurisée</h1>
+          <p class="text-sm text-subtitle mt-2 mb-8">Veuillez vous identifier pour accéder à la plateforme BIMAO OS. L'accès est réservé aux collaborateurs habilités.</p>
+
+          <form id="login-form" class="space-y-5" novalidate>
+            <div>
+              <label for="email" class="block text-sm font-semibold text-slate-200 mb-2">Adresse e-mail professionnelle <span class="text-rose-500">*</span></label>
+              <input id="email" name="email" type="email" required autocomplete="username" placeholder="prenom.nom@bimao-cf.com" class="auth-input w-full rounded-xl px-4 py-3 text-sm text-white placeholder:text-slate-500">
+            </div>
+            <div>
+              <label for="password" class="block text-sm font-semibold text-slate-200 mb-2">Mot de passe <span class="text-rose-500">*</span></label>
+              <input id="password" name="password" type="password" required autocomplete="current-password" placeholder="••••••••••••" class="auth-input w-full rounded-xl px-4 py-3 text-sm text-white placeholder:text-slate-500">
+              <a href="#" class="inline-block mt-2 text-xs font-medium text-blue-400 hover:text-blue-300">Mot de passe oublié ?</a>
+            </div>
+
+            <button type="submit" class="w-full bg-[#00007B] hover:bg-[#0000a0] text-white font-semibold text-sm rounded-xl py-3.5 shadow-lg shadow-[#00007B]/40 transition-colors">
+              Se connecter
+            </button>
+          </form>
+        </div>
+
+        <!-- Divider -->
+        <div class="hidden md:block auth-divider"></div>
+
+        <!-- Right: QR activation key -->
+        <div class="flex flex-col items-center justify-center text-center pt-8 md:pt-0 border-t md:border-t-0 border-white/5">
+          <div class="bg-white rounded-2xl p-4 shadow-xl">
+            <img src="assets/qr-placeholder.png" alt="Code QR de connexion BIMAO" class="w-40 h-40 sm:w-44 sm:h-44 object-contain">
+          </div>
+          <h2 class="text-base font-bold text-white mt-6">Connexion par clé d'activation</h2>
+          <p class="text-xs text-subtitle mt-2 max-w-[220px] leading-relaxed">
+            Scannez ce code sur votre téléphone pour vous authentifier de manière sécurisée, sans mot de passe.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <footer class="text-center pb-6">
+    <p class="text-[12px] text-label">© 2026 BIMAO — Système d'information Direction Générale. Tous droits réservés.</p>
+  </footer>
+
+  <script src="js/transitions.js"></script>
+  <script>
+    document.getElementById('login-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      const params = email ? ('?email=' + encodeURIComponent(email)) : '';
+      window.bmaNavigate('otp.html' + params);
+    });
+  </script>
+</body>
+</html>

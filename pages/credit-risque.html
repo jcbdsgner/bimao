@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BIMAO OS — Crédit & Risque (Analyse Détaillée)</title>
+  <script>document.documentElement.classList.add('bma-js')</script>
+  <script>
+    if (!sessionStorage.getItem('bimao_auth')) {
+      window.location.replace('../login.html');
+    }
+  </script>
+  <link rel="stylesheet" href="../css/tailwind.build.css">
+  <link rel="stylesheet" href="../css/custom.css">
+</head>
+<body class="flex min-h-screen bg-[#020617] text-[#f8fafc] relative z-0 fast-nav">
+
+  <div class="ambient-glow-1"></div>
+  <div class="ambient-glow-2"></div>
+
+  <div id="sidebar-slot"></div>
+
+  <div class="flex-1 flex flex-col min-w-0 relative z-10">
+    
+    <header class="glass-panel px-8 py-3.5 flex flex-wrap items-center justify-between gap-4 sticky top-0 z-40">
+      <div class="flex items-center space-x-4">
+        <div class="hidden sm:block">
+          <h2 class="text-base font-bold text-white tracking-tight">Système de Pilotage Exécutif</h2>
+          <p class="text-xs text-slate-400 font-medium">Données arrêtées au 31 Janvier 2026</p>
+        </div>
+      </div>
+      <div class="flex items-center space-x-3">
+        <div class="hidden lg:flex items-center bg-white/5 border border-white/10 rounded-full px-3 py-1 text-xs text-slate-300">
+          <span class="text-slate-400 font-semibold mr-1.5 uppercase text-[11px]">Agence:</span>
+          <select class="bg-transparent font-semibold text-white outline-none cursor-pointer">
+            <option class="bg-[#0f172a] text-white">Toutes (Consolidé)</option>
+            <option class="bg-[#0f172a] text-white">Siège Dakar</option>
+          </select>
+        </div>
+      </div>
+    </header>
+    
+    
+    <main class="p-8 space-y-8 max-w-[1400px]">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#1e293b] pb-5">
+        <div>
+          <span class="text-xs font-semibold text-label uppercase tracking-wider block">MODULE SPÉCIALISÉ — RISQUE & PORTEFEUILLE DE CRÉDIT</span>
+          <h1 class="text-2xl font-bold tracking-tight text-white mt-0.5">Analyse Détaillée du Risque & Recouvrement</h1>
+        </div>
+        <div class="bma-pill px-4 py-2 text-right">
+          <span class="text-rose-400 mr-2">●</span>
+          <span class="text-sm font-bold text-white tabular-nums">38,1% NPL (23,6 Mds)</span>
+        </div>
+      </div>
+
+      <!-- DEEP METRICS (Harmonized to Dashboard Cards) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div class="bma-card p-5 flex flex-col justify-between min-h-[140px]">
+          <span class="text-[12px] font-semibold text-label uppercase tracking-wider block">Crédits Accordés (Cumul)</span>
+          <div class="text-3xl font-semibold text-white tabular-nums tracking-tight flex items-baseline gap-1 mt-2">
+            200,3 <span class="text-sm font-medium text-slate-500">Mds FCFA</span>
+          </div>
+          <p class="text-xs text-label mt-2">100% Historique signé</p>
+        </div>
+
+        <div class="bma-card p-5 flex flex-col justify-between min-h-[140px]">
+          <span class="text-[12px] font-semibold text-label uppercase tracking-wider block">Encours Sains Restants</span>
+          <div class="text-3xl font-semibold text-white tabular-nums tracking-tight flex items-baseline gap-1 mt-2">
+            76,3 <span class="text-sm font-medium text-slate-500">Mds FCFA</span>
+          </div>
+          <p class="text-xs text-emerald-400 font-medium mt-2">59,3% de capital restants dûs</p>
+        </div>
+
+        <div class="bma-card-alert p-5 flex flex-col justify-between min-h-[140px]">
+          <span class="text-[12px] font-semibold text-label uppercase tracking-wider block">Créances Douteuses (NPL)</span>
+          <div class="text-3xl font-semibold text-white tabular-nums tracking-tight flex items-baseline gap-1 mt-2">
+            23,6 <span class="text-sm font-medium text-slate-500">Mds FCFA</span>
+          </div>
+          <p class="text-xs text-rose-400 font-medium mt-2">Capital total exposé (38,1%)</p>
+        </div>
+
+        <div class="bma-card p-5 flex flex-col justify-between min-h-[140px]">
+          <span class="text-[12px] font-semibold text-label uppercase tracking-wider block">Provisions Constituées</span>
+          <div class="text-3xl font-semibold text-white tabular-nums tracking-tight flex items-baseline gap-1 mt-2">
+            18,2 <span class="text-sm font-medium text-slate-500">Mds FCFA</span>
+          </div>
+          <p class="text-xs text-blue-400 font-medium mt-2">Taux de couverture : 77,1%</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Detailed Impayés Table -->
+        <div class="lg:col-span-7 bma-card p-6 space-y-6">
+          <div class="flex items-center justify-between pb-2 border-b border-[#1e293b]">
+            <div>
+              <h2 class="text-base font-semibold text-subtitle">Dossiers d'Impayés en Recouvrement (226 cas / 10,5 Mds)</h2>
+              <p class="text-xs text-label mt-0.5">Échéances échues et non payées sous suivi opérationnel</p>
+            </div>
+            <span class="bma-pill">Chantier d'action</span>
+          </div>
+
+          <div class="pt-1">
+            <table class="w-full text-left text-xs">
+              <thead class="text-label border-b border-[#1e293b]">
+                <tr>
+                  <th class="pb-3 font-medium">Classification</th>
+                  <th class="pb-3 text-center font-medium">Risque</th>
+                  <th class="pb-3 text-right font-medium">Dossiers</th>
+                  <th class="pb-3 text-right font-medium">Montant Impayé</th>
+                  <th class="pb-3 text-center font-medium">Retard Moyen</th>
+                  <th class="pb-3 text-center font-medium">Procédure Engagée</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-[#1e293b]/50 text-subtitle">
+                <tr>
+                  <td class="py-3.5 flex items-center space-x-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                    <span class="font-medium text-white">Douteux / Contentieux</span>
+                  </td>
+                  <td class="py-3.5 text-center"><span class="text-rose-400 font-medium">NPL</span></td>
+                  <td class="py-3.5 text-right tabular-nums text-white font-medium">129 (57,1%)</td>
+                  <td class="py-3.5 text-right tabular-nums font-semibold text-white">9,5 Mds FCFA</td>
+                  <td class="py-3.5 text-center text-label">&gt; 180 jours</td>
+                  <td class="py-3.5 text-center"><span class="bma-badge">Recouvrement Forcé</span></td>
+                </tr>
+                <tr>
+                  <td class="py-3.5 flex items-center space-x-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span>
+                    <span>Sains (En retard)</span>
+                  </td>
+                  <td class="py-3.5 text-center"><span class="text-slate-400 font-medium">Sain</span></td>
+                  <td class="py-3.5 text-right tabular-nums text-white">90 (39,8%)</td>
+                  <td class="py-3.5 text-right tabular-nums text-white">0,9 Md FCFA</td>
+                  <td class="py-3.5 text-center text-label">30 à 90 jours</td>
+                  <td class="py-3.5 text-center"><span class="bma-badge">Relance Amiable</span></td>
+                </tr>
+                <tr>
+                  <td class="py-3.5 flex items-center space-x-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-slate-600"></span>
+                    <span class="text-label">Restructurés</span>
+                  </td>
+                  <td class="py-3.5 text-center"><span class="text-slate-500 font-medium">Restr.</span></td>
+                  <td class="py-3.5 text-right tabular-nums text-label">7 (3,1%)</td>
+                  <td class="py-3.5 text-right tabular-nums text-label">0,1 Md FCFA</td>
+                  <td class="py-3.5 text-center text-label">Rééchelonné</td>
+                  <td class="py-3.5 text-center"><span class="bma-badge">Suivi Échéancier</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Subcards with bma-subcard styling -->
+          <div class="pt-4 border-t border-[#1e293b] grid grid-cols-2 gap-4 text-xs text-label">
+            <div class="bma-subcard p-4 space-y-1">
+              <span class="font-semibold text-subtitle block">Répartition NPL par Segment :</span>
+              <p>• <strong class="text-white">Particuliers :</strong> 14,8 Mds FCFA (62,7%)</p>
+              <p>• <strong class="text-white">Entreprises/SME :</strong> 8,8 Mds FCFA (37,3%)</p>
+            </div>
+            <div class="bma-subcard p-4 space-y-1">
+              <span class="font-semibold text-subtitle block">Couverture par Sûretés :</span>
+              <p>• <strong class="text-white">Hypothèques / Garanties :</strong> 15,4 Mds (65%)</p>
+              <p>• <strong class="text-rose-400">Non garantis / Cautions :</strong> 8,2 Mds (35%)</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Prudential Gauge -->
+        <div class="lg:col-span-5 space-y-6">
+          
+          <div class="bma-card p-6 space-y-5">
+            <div class="flex items-center justify-between border-b border-[#1e293b] pb-3">
+              <div>
+                <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">CONFORMITÉ PRUDENTIELLE</span>
+                <h3 class="text-base font-bold text-white mt-0.5">Ratio de Créances Douteuses (NPL)</h3>
+              </div>
+              <span class="bma-badge border-rose-500/30 text-rose-400 font-bold">
+                <span class="text-rose-500">●</span> +23,1% de dépassement
+              </span>
+            </div>
+
+            <!-- Key Figures Header -->
+            <div class="flex justify-between items-baseline text-xs pt-1">
+              <div>
+                <span class="text-slate-400 block text-[12px] font-medium">Taux NPL Actuel BIMAO</span>
+                <span class="text-2xl font-bold text-white tabular-nums">38,1%</span>
+              </div>
+              <div class="text-right">
+                <span class="text-slate-400 block text-[12px] font-medium">Plafond Règlementaire BCEAO</span>
+                <span class="text-base font-bold text-emerald-400 tabular-nums">15,0% Max</span>
+              </div>
+            </div>
+
+            <!-- Single Thick Gauge Bar with Regulatory Cursor & Red Overflow -->
+            <div class="space-y-2 pt-2">
+              <div class="relative w-full">
+                <div class="gauge-container">
+                  <div class="h-full bg-emerald-500 flex items-center justify-end pr-2 text-[11px] font-bold text-slate-950" style="width: 30%">
+                    15,0%
+                  </div>
+                  <div class="h-full bg-rose-500 flex items-center justify-center text-[11px] font-bold text-white" style="width: 46.2%">
+                    +23,1% Hors-Norme
+                  </div>
+                </div>
+                <div class="gauge-cursor" style="left: 30%;"></div>
+              </div>
+
+              <div class="flex justify-between text-[12px] text-slate-400 pt-1 font-medium">
+                <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Seuil Toléré (0 - 15,0%)</span>
+                <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-rose-500"></span> Zone de Sur-Risque (+23,1%)</span>
+              </div>
+            </div>
+
+            <div class="bma-subcard p-4 text-xs text-slate-300 space-y-1.5">
+              <span class="text-white font-semibold block">Diagnostic Réglementaire :</span>
+              <p>Le portefeuille dépasse le plafond réglementaire de 15,0% de <strong class="text-rose-400">23,1 points de pourcentage</strong> (23,6 Mds FCFA exposés).</p>
+              <p class="text-[12px] text-slate-400">• <strong class="text-slate-200">Impact Fonds Propres :</strong> Exigence de provisionnement complémentaire obligatoire sous peine de sanction BCEAO.</p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </main>
+  </div>
+  <script src="/js/include-sidebar.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/transitions.js"></script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+node_modules/
+.vite/
+.DS_Store
+_inspect_tmp*.js
+_before_hover.png
+_after_hover.png
