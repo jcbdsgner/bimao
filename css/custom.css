@@ -18,6 +18,8 @@
 
 * { box-sizing: border-box; }
 
+html { overflow-x: hidden; }
+
 body, button, input, select, textarea {
   font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif !important;
   color: var(--text-primary);

@@ -10,18 +10,25 @@
   <style>
     body {
       background-color: #020617;
+      min-height: 100vh;
+    }
+    /* A dedicated fixed layer for the background image — `background-attachment: fixed`
+       directly on body prevents backdrop-filter from blurring it in Chromium, so the
+       image lives on its own layer behind everything instead. */
+    .bg-layer {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
       background-image: linear-gradient(rgba(2,6,23,0.2), rgba(2,6,23,0.2)), url('assets/login-bg.png');
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
-      background-attachment: fixed;
-      min-height: 100vh;
     }
     .auth-card {
-      background-color: rgba(10, 15, 30, 0.82);
+      background-color: rgba(10, 15, 30, 0.9);
       border: 1px solid rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(40px);
+      -webkit-backdrop-filter: blur(40px);
       box-shadow: 0 25px 70px -15px rgba(0, 0, 0, 0.65);
     }
     .otp-input {
@@ -36,9 +43,19 @@
     }
     .otp-input.filled { border-color: var(--bimao-blue-text); }
     button:disabled { opacity: 0.45; cursor: not-allowed; }
+    /* css/custom.css sets a plain `button { background-color: ... }` rule outside any
+       @layer, which beats Tailwind v4's layered .bg-[#00007B] utility regardless of
+       specificity — cascade layers always lose to unlayered styles. Override explicitly. */
+    #verify-btn {
+      background-color: #00007B;
+    }
+    #verify-btn:hover:not(:disabled) {
+      background-color: #0000a0;
+    }
   </style>
 </head>
 <body class="flex flex-col min-h-screen text-[#f8fafc] relative">
+  <div class="bg-layer"></div>
 
   <!-- Brand mark -->
   <div class="p-8">
