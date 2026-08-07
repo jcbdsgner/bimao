@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BIMAO OS — Comptes Bancaires (Gestion & Analyse)</title>
+  <script>document.documentElement.classList.add('bma-js')</script>
+  <script>
+    if (!sessionStorage.getItem('bimao_auth')) {
+      window.location.replace('../login.html');
+    }
+  </script>
+  <link rel="stylesheet" href="../css/tailwind.build.css">
+  <link rel="stylesheet" href="../css/custom.css">
+</head>
+<body class="flex min-h-screen bg-[#020617] text-[#f8fafc] relative z-0 fast-nav">
+
+  <div class="ambient-glow-1"></div>
+  <div class="ambient-glow-2"></div>
+
+  <div id="sidebar-slot"></div>
+
+  <div class="flex-1 flex flex-col min-w-0 relative z-10">
+
+    <header class="glass-panel px-4 sm:px-8 py-3.5 flex flex-wrap items-center justify-between gap-4 sticky top-0 z-40">
+      <div class="flex items-center space-x-4">
+        <button data-mobile-nav-toggle aria-label="Ouvrir le menu" class="md:hidden w-9 h-9 -ml-1 flex items-center justify-center rounded-lg text-slate-300 hover:text-white hover:bg-white/5 shrink-0">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <div class="hidden sm:block">
+          <h2 class="text-base font-bold text-white tracking-tight">Système de Pilotage Exécutif</h2>
+          <p class="text-xs text-slate-400 font-medium">Données arrêtées au 31 Janvier 2026</p>
+        </div>
+      </div>
+      <div class="flex items-center space-x-3">
+        <div class="hidden lg:flex items-center bg-white/5 border border-white/10 rounded-full px-3 py-1 text-xs text-slate-300">
+          <span class="text-slate-400 font-semibold mr-1.5 uppercase text-[11px]">Agence:</span>
+          <select class="bg-transparent font-semibold text-white outline-none cursor-pointer">
+            <option class="bg-[#0f172a] text-white">Toutes (Consolidé)</option>
+            <option class="bg-[#0f172a] text-white">Siège Dakar</option>
+          </select>
+        </div>
+      </div>
+    </header>
+
+
+    <main class="p-4 sm:p-8 space-y-6 sm:space-y-8 max-w-[1400px]">
+      <!-- Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#1e293b] pb-5">
+        <div>
+          <span class="text-xs font-semibold text-label uppercase tracking-wider block">MODULE SPÉCIALISÉ — GESTION DES COMPTES CLIENTS</span>
+          <h1 class="text-2xl font-bold tracking-tight text-white mt-0.5">Comptes Bancaires — Gestion & Analyse</h1>
+        </div>
+        <div class="bma-pill px-4 py-2 text-right">
+          <span class="text-emerald-400 mr-2">●</span>
+          <span class="text-sm font-bold text-white tabular-nums">90,4% de comptes actifs</span>
+        </div>
+      </div>
+
+      <!-- KPI GRID -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-5">
+        <div class="bma-card p-4 sm:p-5 flex flex-col justify-between min-h-[130px]">
+          <span class="text-[11px] sm:text-[12px] font-semibold text-label uppercase tracking-wider block">Comptes Ouverts</span>
+          <div class="text-2xl sm:text-3xl font-semibold text-white tabular-nums tracking-tight mt-2">6 522</div>
+          <p class="text-xs text-label mt-2">Portefeuille total consolidé</p>
+        </div>
+
+        <div class="bma-card p-4 sm:p-5 flex flex-col justify-between min-h-[130px]">
+          <div class="flex flex-wrap justify-between items-start gap-x-2 gap-y-1">
+            <span class="text-[11px] sm:text-[12px] font-semibold text-label uppercase tracking-wider block">Actifs</span>
+            <span class="bma-badge"><span class="text-emerald-400">●</span> 90,4%</span>
+          </div>
+          <div class="text-2xl sm:text-3xl font-semibold text-white tabular-nums tracking-tight mt-2">5 899</div>
+          <p class="text-xs text-emerald-400 font-medium mt-2">Comptes avec activité récente</p>
+        </div>
+
+        <div class="bma-card p-4 sm:p-5 flex flex-col justify-between min-h-[130px]">
+          <div class="flex flex-wrap justify-between items-start gap-x-2 gap-y-1">
+            <span class="text-[11px] sm:text-[12px] font-semibold text-label uppercase tracking-wider block">Clôturés</span>
+            <span class="bma-badge"><span class="text-slate-400">●</span> 9,3%</span>
+          </div>
+          <div class="text-2xl sm:text-3xl font-semibold text-white tabular-nums tracking-tight mt-2">608</div>
+          <p class="text-xs text-label mt-2">Sorties définitives de portefeuille</p>
+        </div>
+
+        <div class="bma-card p-4 sm:p-5 flex flex-col justify-between min-h-[130px]">
+          <div class="flex flex-wrap justify-between items-start gap-x-2 gap-y-1">
+            <span class="text-[11px] sm:text-[12px] font-semibold text-label uppercase tracking-wider block">En Clôture</span>
+            <span class="bma-badge"><span class="text-amber-400">●</span> WaitingClosing</span>
+          </div>
+          <div class="text-2xl sm:text-3xl font-semibold text-white tabular-nums tracking-tight mt-2">15</div>
+          <p class="text-xs text-amber-400 font-medium mt-2">Procédure de clôture en cours</p>
+        </div>
+
+        <div class="bma-card p-4 sm:p-5 flex flex-col justify-between min-h-[130px] col-span-2 sm:col-span-1">
+          <span class="text-[11px] sm:text-[12px] font-semibold text-label uppercase tracking-wider block">Types Distincts</span>
+          <div class="text-2xl sm:text-3xl font-semibold text-white tabular-nums tracking-tight mt-2">36</div>
+          <p class="text-xs text-label mt-2">Types de comptes référencés</p>
+        </div>
+      </div>
+
+      <!-- REPARTITION BAR -->
+      <div class="bma-card p-4 sm:p-5 space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
+          <span class="text-xs font-medium text-label">Répartition des 6 522 comptes ouverts par statut</span>
+        </div>
+
+        <div class="h-3 w-full bg-[#1e293b] rounded-full overflow-hidden flex gap-0.5 border border-[#334155]/50">
+          <div class="h-full bg-emerald-500 flex items-center justify-center text-[11px] font-bold text-slate-950 whitespace-nowrap overflow-hidden px-1" style="width: 90.4%" title="5 899 comptes actifs (90,4%)">
+            90,4%
+          </div>
+          <div class="h-full bg-slate-500 flex items-center justify-center text-[11px] font-bold text-slate-950 whitespace-nowrap overflow-hidden px-1" style="width: 9.3%" title="608 comptes clôturés (9,3%)"></div>
+          <div class="h-full bg-amber-500 flex items-center justify-center text-[11px] font-bold text-slate-950 whitespace-nowrap overflow-hidden px-1" style="width: 0.3%" title="15 comptes en clôture (0,3%)"></div>
+        </div>
+
+        <div class="flex flex-wrap justify-between gap-x-4 gap-y-1 text-[12px] text-label pt-1 font-medium">
+          <span class="flex items-center gap-1.5 whitespace-nowrap"><span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span> Actifs — 5 899 (90,4%)</span>
+          <span class="flex items-center gap-1.5 whitespace-nowrap"><span class="w-2 h-2 rounded-full bg-slate-500 shrink-0"></span> Clôturés — 608 (9,3%)</span>
+          <span class="flex items-center gap-1.5 whitespace-nowrap"><span class="w-2 h-2 rounded-full bg-amber-500 shrink-0"></span> En clôture — 15 (0,3%)</span>
+        </div>
+      </div>
+
+      <!-- TOP 10 TABLE -->
+      <div class="bma-card p-4 sm:p-6 space-y-5">
+        <div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-[#1e293b]">
+          <div>
+            <h2 class="text-base font-semibold text-subtitle">Comptes par type — Top 10</h2>
+            <p class="text-xs text-label mt-0.5">Détail par produit sur 36 types de comptes référencés</p>
+          </div>
+          <span class="bma-pill">10 / 36 types</span>
+        </div>
+
+        <div class="pt-2 overflow-x-auto">
+          <table class="w-full text-left text-xs min-w-[720px]">
+            <thead class="text-label border-b border-[#1e293b]">
+              <tr>
+                <th class="pb-3 font-medium">Type de compte</th>
+                <th class="pb-3 text-right font-medium">Nb Total</th>
+                <th class="pb-3 text-right font-medium">Actifs</th>
+                <th class="pb-3 text-right font-medium">Clôturés</th>
+                <th class="pb-3 text-right font-medium">Solde total (XOF)</th>
+                <th class="pb-3 text-center font-medium">Statut</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-[#1e293b]/50 text-subtitle">
+              <tr>
+                <td class="py-3.5 text-white font-medium font-mono">CAVPAR</td>
+                <td class="py-3.5 text-right tabular-nums text-white">2 557</td>
+                <td class="py-3.5 text-right tabular-nums">2 493</td>
+                <td class="py-3.5 text-right tabular-nums">60</td>
+                <td class="py-3.5 text-right tabular-nums text-white font-medium">616 613 271</td>
+                <td class="py-3.5 text-center"><span class="bma-badge"><span class="text-emerald-400">●</span> Sain</span></td>
+              </tr>
+              <tr>
+                <td class="py-3.5 text-white font-medium font-mono">CAVSOC</td>
+                <td class="py-3.5 text-right tabular-nums text-white">1 158</td>
+                <td class="py-3.5 text-right tabular-nums">877</td>
+                <td class="py-3.5 text-right tabular-nums">280</td>
+                <td class="py-3.5 text-right tabular-nums text-rose-400 font-medium">-5 087 451 112</td>
+                <td class="py-3.5 text-center"><span class="bma-badge"><span class="text-rose-400">●</span> Déficit</span></td>
+              </tr>
+              <tr>
+                <td class="py-3.5 text-white font-medium font-mono">CAVIND</td>
+                <td class="py-3.5 text-right tabular-nums text-white">1 020</td>
+                <td class="py-3.5 text-right tabular-nums">853</td>
+                <td class="py-3.5 text-right tabular-nums">166</td>
+                <td class="py-3.5 text-right tabular-nums text-white font-medium">8 274 576</td>
+                <td class="py-3.5 text-center"><span class="bma-badge"><span class="text-emerald-400">●</span> Sain</span></td>
+              </tr>
+              <tr>
+                <td class="py-3.5 text-white font-medium font-mono">CEPLIV</td>
+                <td class="py-3.5 text-right tabular-nums text-white">412</td>
+                <td class="py-3.5 text-right tabular-nums">407</td>
+                <td class="py-3.5 text-right tabular-nums">0</td>
+                <td class="py-3.5 text-right tabular-nums text-white font-medium">148 280 158</td>
+                <td class="py-3.5 text-center"><span class="bma-badge"><span class="text-emerald-400">●</span> Sain</span></td>
+              </tr>
+              <tr>
+                <td class="py-3.5 text-white font-medium font-mono">DPG612</td>
+                <td class="py-3.5 text-right tabular-nums text-white">279</td>
+                <td class="py-3.5 text-right tabular-nums">262</td>
+                <td class="py-3.5 text-right tabular-nums">17</td>
+                <td class="py-3.5 text-right tabular-nums text-white font-medium">2 107 319 230</td>
+                <td class="py-3.5 text-center"><span class="bma-badge"><span class="text-emerald-400">●</span> Sain</span></td>
+              </tr>
+              <tr>
+                <td class="py-3.5 text-white font-medium font-mono">CFRECORD</td>
+                <td class="py-3.5 text-right tabular-nums text-white">237</td>
+                <td class="py-3.5 text-right tabular-nums">225</td>
+                <td class="py-3.5 text-right tabular-nums">10</td>
+                <td class="py-3.5 text-right tabular-nums text-rose-400 font-medium">-440 423 463</td>
+                <td class="py-3.5 text-center"><span class="bma-badge"><span class="text-rose-400">●</span> Déficit</span></td>
+              </tr>
+              <tr>
+                <td class="py-3.5 text-white font-medium font-mono">CCONTX</td>
+                <td class="py-3.5 text-right tabular-nums text-white">211</td>
+                <td class="py-3.5 text-right tabular-nums">209</td>
+                <td class="py-3.5 text-right tabular-nums">2</td>
+                <td class="py-3.5 text-right tabular-nums text-white font-medium">81 178 462</td>
+                <td class="py-3.5 text-center"><span class="bma-badge"><span class="text-emerald-400">●</span> Sain</span></td>
+              </tr>
+              <tr>
+                <td class="py-3.5 text-white font-medium font-mono">PCI</td>
+                <td class="py-3.5 text-right tabular-nums text-white">199</td>
+                <td class="py-3.5 text-right tabular-nums">199</td>
+                <td class="py-3.5 text-right tabular-nums">0</td>
+                <td class="py-3.5 text-right tabular-nums text-rose-400 font-medium">-1 189 389 755</td>
+                <td class="py-3.5 text-center"><span class="bma-badge"><span class="text-rose-400">●</span> Déficit</span></td>
+              </tr>
+              <tr>
+                <td class="py-3.5 text-white font-medium font-mono">CAVPER</td>
+                <td class="py-3.5 text-right tabular-nums text-white">101</td>
+                <td class="py-3.5 text-right tabular-nums">94</td>
+                <td class="py-3.5 text-right tabular-nums">7</td>
+                <td class="py-3.5 text-right tabular-nums text-rose-400 font-medium">-16 898 733</td>
+                <td class="py-3.5 text-center"><span class="bma-badge"><span class="text-rose-400">●</span> Déficit</span></td>
+              </tr>
+              <tr>
+                <td class="py-3.5 text-white font-medium font-mono">CAVONG</td>
+                <td class="py-3.5 text-right tabular-nums text-white">86</td>
+                <td class="py-3.5 text-right tabular-nums">75</td>
+                <td class="py-3.5 text-right tabular-nums">10</td>
+                <td class="py-3.5 text-right tabular-nums text-white font-medium">173 274 725</td>
+                <td class="py-3.5 text-center"><span class="bma-badge"><span class="text-emerald-400">●</span> Sain</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="/js/include-sidebar.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/transitions.js"></script>
+</body>
+</html>
