@@ -93,6 +93,9 @@
     #login-form button[type="submit"]:hover {
       background-color: #0000a0;
     }
+    .qr-card-shadow {
+      box-shadow: 0px 20px 12.5px rgba(0, 0, 0, 0.1), 0px 8px 5px rgba(0, 0, 0, 0.1);
+    }
     /* Mobile-only Face ID login: a single big square button — icon on top, label below.
        Desktop keeps the original QR code panel instead (see the markup below). */
     .faceid-btn {
@@ -182,12 +185,15 @@
         <div class="flex flex-col items-center justify-center text-center pt-8 md:pt-0 border-t md:border-t-0 border-white/5">
           <!-- Desktop: QR code -->
           <div class="hidden md:block">
-            <div class="bg-white rounded-2xl p-4 shadow-xl">
+            <div class="brand-badge-mini">
+              <img src="assets/bimao-badge.png" alt="BIMAO — Banque des Institutions Mutualistes d'Afrique de l'Ouest">
+            </div>
+            <div class="bg-white rounded-2xl p-4 qr-card-shadow">
               <img src="assets/qr-placeholder.png" alt="Code QR de connexion BIMAO" class="w-40 h-40 sm:w-44 sm:h-44 object-contain">
             </div>
-            <h2 class="text-base font-bold text-white mt-6">Connexion par clé d'activation</h2>
+            <h2 class="text-base font-bold text-white mt-6">Connexion rapide par QR code</h2>
             <p class="text-xs text-subtitle mt-2 max-w-[220px] leading-relaxed">
-              Scannez ce code sur votre téléphone pour vous authentifier de manière sécurisée, sans mot de passe.
+              Scannez ce code avec votre téléphone pour un accès instantané.
             </p>
           </div>
 
