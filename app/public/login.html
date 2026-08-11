@@ -48,7 +48,7 @@
       width: 1px;
       background: linear-gradient(180deg, transparent, rgba(255,255,255,0.12), transparent);
     }
-    /* Brand badge above the activation key — the exact wordmark lockup exported from the
+    /* Brand badge above the Face ID panel — the exact wordmark lockup exported from the
        Figma source (image 6), cropped to a 109x30.77 pill the same way the design does:
        scaled to fill the width, then the top/bottom sliver is clipped via overflow. Plain
        CSS because css/tailwind.build.css is a static pre-built file (no live Tailwind
@@ -93,20 +93,35 @@
     #login-form button[type="submit"]:hover {
       background-color: #0000a0;
     }
-    .activation-key-card {
-      background-color: rgba(2, 6, 23, 0.55);
+    .faceid-icon-wrap {
+      width: 64px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 18px;
+      background-color: rgba(81, 162, 255, 0.1);
+      border: 1px solid rgba(81, 162, 255, 0.25);
+    }
+    .faceid-btn {
+      background-color: transparent;
       border: 1px solid #334155;
-      box-shadow: 0px 20px 12.5px rgba(0, 0, 0, 0.1), 0px 8px 5px rgba(0, 0, 0, 0.1);
+      color: #f8fafc;
+      transition: border-color 0.15s ease, background-color 0.15s ease, opacity 0.15s ease;
     }
-    .activation-key-code {
-      letter-spacing: 0.18em;
+    .faceid-btn:hover:not(:disabled) {
+      border-color: var(--bimao-blue-text);
+      background-color: rgba(81, 162, 255, 0.08);
     }
-    .copy-key-btn {
-      color: #51a2ff;
-      transition: color 0.15s ease;
+    .faceid-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
-    .copy-key-btn:hover {
-      color: #7cc5ff;
+    .faceid-status {
+      min-height: 14px;
+    }
+    .faceid-status.is-success {
+      color: #4ade80;
     }
   </style>
 </head>
@@ -153,21 +168,41 @@
         <!-- Divider -->
         <div class="hidden md:block auth-divider"></div>
 
-        <!-- Right: mobile activation key -->
+        <!-- Right: biometric login -->
         <div class="flex flex-col items-center justify-center text-center pt-8 md:pt-0 border-t md:border-t-0 border-white/5">
           <div class="brand-badge-mini">
             <img src="assets/bimao-badge.png" alt="BIMAO — Banque des Institutions Mutualistes d'Afrique de l'Ouest">
           </div>
-          <div class="activation-key-card rounded-2xl px-6 py-5 w-full max-w-[220px]">
-            <span class="block text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-3">Clé d'activation</span>
-            <span id="activation-key" class="activation-key-code block font-mono text-2xl font-bold text-white">B7X9-K2Q4</span>
-            <button id="copy-key-btn" type="button" class="copy-key-btn mt-3 text-xs font-semibold">Copier la clé</button>
+
+          <div class="faceid-icon-wrap">
+            <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M4 9V6.5a2.5 2.5 0 0 1 2.5-2.5H9" stroke="#51a2ff" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M26 9V6.5A2.5 2.5 0 0 0 23.5 4H21" stroke="#51a2ff" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M4 21v2.5A2.5 2.5 0 0 0 6.5 26H9" stroke="#51a2ff" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M26 21v2.5a2.5 2.5 0 0 1-2.5 2.5H21" stroke="#51a2ff" stroke-width="1.8" stroke-linecap="round"/>
+              <circle cx="12" cy="13" r="1.1" fill="#e2e8f0"/>
+              <circle cx="18" cy="13" r="1.1" fill="#e2e8f0"/>
+              <path d="M15 12.5v3c0 .6.5 1 1 1" stroke="#e2e8f0" stroke-width="1.3" stroke-linecap="round"/>
+              <path d="M11 19c1.2 1 2.6 1.5 4 1.5s2.8-.5 4-1.5" stroke="#e2e8f0" stroke-width="1.3" stroke-linecap="round"/>
+            </svg>
           </div>
-          <h2 class="text-base font-bold text-white mt-6">Connexion rapide par clé d'activation</h2>
+
+          <h2 class="text-base font-bold text-white mt-5">Connexion rapide avec Face ID</h2>
           <p class="text-xs text-subtitle mt-2 max-w-[220px] leading-relaxed">
-            Saisissez cette clé dans l'application mobile BIMAO pour activer votre session.
+            Utilisez la reconnaissance faciale, l'empreinte ou Windows Hello de votre appareil pour vous connecter sans mot de passe.
           </p>
-          <p class="text-[11px] text-label mt-3">Valable 10 minutes</p>
+
+          <button id="faceid-btn" type="button" class="faceid-btn mt-5 w-full max-w-[220px] inline-flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M4 8V6a2 2 0 0 1 2-2h2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M20 8V6a2 2 0 0 0-2-2h-2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M4 16v2a2 2 0 0 0 2 2h2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M20 16v2a2 2 0 0 1-2 2h-2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            Se connecter avec Face ID
+          </button>
+
+          <p id="faceid-status" class="faceid-status text-[11px] text-label mt-3"></p>
         </div>
 
       </div>
@@ -187,15 +222,58 @@
       window.bmaNavigate('otp.html' + params);
     });
 
-    // Copy the activation key to the clipboard with brief inline feedback
-    const copyKeyBtn = document.getElementById('copy-key-btn');
-    copyKeyBtn.addEventListener('click', function () {
-      const key = document.getElementById('activation-key').textContent.trim();
-      navigator.clipboard.writeText(key).then(function () {
-        const original = copyKeyBtn.textContent;
-        copyKeyBtn.textContent = 'Copié ✓';
-        setTimeout(function () { copyKeyBtn.textContent = original; }, 2000);
-      });
+    // Biometric login (Face ID / Touch ID / Windows Hello) via the browser's own
+    // WebAuthn platform authenticator — no companion app needed. `create()` triggers
+    // the OS biometric prompt even without a pre-registered credential, which is enough
+    // here since there's no backend to verify against: a successful ceremony is treated
+    // as proof of identity and skips straight past the OTP step.
+    const faceIdBtn = document.getElementById('faceid-btn');
+    const faceIdStatus = document.getElementById('faceid-status');
+
+    async function biometricAvailable() {
+      if (!window.PublicKeyCredential || !PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable) return false;
+      try {
+        return await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+      } catch (e) {
+        return false;
+      }
+    }
+
+    biometricAvailable().then(function (available) {
+      if (!available) {
+        faceIdBtn.disabled = true;
+        faceIdBtn.lastChild.textContent = ' Indisponible sur cet appareil';
+        faceIdStatus.textContent = 'Aucune biométrie détectée (Face ID, Touch ID ou Windows Hello).';
+      }
+    });
+
+    faceIdBtn.addEventListener('click', async function () {
+      faceIdBtn.disabled = true;
+      faceIdStatus.classList.remove('is-success');
+      faceIdStatus.textContent = 'Vérification biométrique en cours…';
+      try {
+        const challenge = new Uint8Array(32);
+        crypto.getRandomValues(challenge);
+        const userId = new Uint8Array(16);
+        crypto.getRandomValues(userId);
+        await navigator.credentials.create({
+          publicKey: {
+            challenge: challenge,
+            rp: { name: 'BIMAO OS' },
+            user: { id: userId, name: 'directeur@bimao-cf.com', displayName: 'Directeur Général' },
+            pubKeyCredParams: [{ type: 'public-key', alg: -7 }, { type: 'public-key', alg: -257 }],
+            authenticatorSelection: { authenticatorAttachment: 'platform', userVerification: 'required' },
+            timeout: 60000,
+          },
+        });
+        faceIdStatus.classList.add('is-success');
+        faceIdStatus.textContent = 'Identité confirmée ✓';
+        sessionStorage.setItem('bimao_auth', '1');
+        setTimeout(function () { window.bmaNavigate('/'); }, 500);
+      } catch (err) {
+        faceIdBtn.disabled = false;
+        faceIdStatus.textContent = 'Vérification annulée. Réessayez ou connectez-vous avec votre mot de passe.';
+      }
     });
   </script>
 </body>
