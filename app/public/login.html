@@ -48,28 +48,22 @@
       width: 1px;
       background: linear-gradient(180deg, transparent, rgba(255,255,255,0.12), transparent);
     }
-    /* Brand badge above the QR code (desktop) / heading (mobile) — the exact wordmark
-       lockup exported from the Figma source (image 6), cropped to a 109x30.77 pill the
-       same way the design does: scaled to fill the width, then the top/bottom sliver is
-       clipped via overflow. Plain CSS because css/tailwind.build.css is a static
-       pre-built file (no live Tailwind build wired up for app/public/), so arbitrary-
-       value utility classes silently compile to nothing. */
+    /* Brand badge above the QR code (desktop) / heading (mobile) — full BIMAO wordmark
+       lockup (bimao-badge.png, 400x150) at its natural aspect ratio, no crop. Plain CSS
+       because css/tailwind.build.css is a static pre-built file (no live Tailwind build
+       wired up for app/public/), so arbitrary-value utility classes silently compile to
+       nothing. */
     .brand-badge-mini {
-      position: relative;
-      width: 109px;
-      height: 30.77px;
+      width: 180px;
       border-radius: 8px;
       background-color: #ffffff;
-      overflow: hidden;
+      padding: 6px 10px;
       margin-bottom: 24px;
     }
     .brand-badge-mini img {
-      position: absolute;
+      display: block;
       width: 100%;
-      max-width: none;
-      height: 132.84%;
-      left: -0.24%;
-      top: -13.88%;
+      height: auto;
     }
     /* Required-field asterisk and the "forgot password" link use exact design hexes that
        aren't in the Tailwind palette (rose-500 / blue-400 are close but not exact). */
