@@ -93,12 +93,12 @@
     #login-form button[type="submit"]:hover {
       background-color: #0000a0;
     }
+    /* Desktop-only circular Face ID icon above the heading — on mobile the icon lives
+       inside the big square button itself instead, so this stays hidden below md. */
     .faceid-icon-wrap {
+      display: none;
       width: 64px;
       height: 64px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       border-radius: 18px;
       background-color: rgba(81, 162, 255, 0.1);
       border: 1px solid rgba(81, 162, 255, 0.25);
@@ -123,6 +123,44 @@
     .faceid-status.is-success {
       color: #4ade80;
     }
+    /* Mobile: the Face ID panel collapses to a single big square button — icon on top,
+       label below, no separate heading/description/circle (those are desktop-only,
+       see the md breakpoint block further down). */
+    #faceid-btn {
+      flex-direction: column;
+      width: 100%;
+      max-width: 200px;
+      aspect-ratio: 1;
+      margin: 0 auto;
+      border-radius: 24px;
+      gap: 12px;
+      padding: 0 16px;
+      text-align: center;
+    }
+    #faceid-btn svg {
+      width: 34px;
+      height: 34px;
+    }
+    @media (min-width: 768px) {
+      .faceid-icon-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      #faceid-btn {
+        flex-direction: row;
+        width: 100%;
+        max-width: 220px;
+        aspect-ratio: auto;
+        border-radius: 12px;
+        gap: 8px;
+        padding: 12px 16px;
+      }
+      #faceid-btn svg {
+        width: 16px;
+        height: 16px;
+      }
+    }
   </style>
 </head>
 <body class="flex flex-col min-h-screen text-[#f8fafc] relative">
@@ -145,6 +183,9 @@
 
         <!-- Left: credentials -->
         <div class="flex flex-col justify-center">
+          <div class="brand-badge-mini md:hidden">
+            <img src="assets/bimao-badge.png" alt="BIMAO — Banque des Institutions Mutualistes d'Afrique de l'Ouest">
+          </div>
           <h1 class="text-2xl font-bold text-white tracking-tight">Bon retour, Monsieur le Directeur</h1>
           <p class="text-sm text-subtitle mt-2 mb-8">Connectez-vous pour retrouver votre tableau de bord BIMAO.</p>
 
@@ -170,7 +211,7 @@
 
         <!-- Right: biometric login -->
         <div class="flex flex-col items-center justify-center text-center pt-8 md:pt-0 border-t md:border-t-0 border-white/5">
-          <div class="brand-badge-mini">
+          <div class="brand-badge-mini hidden md:block">
             <img src="assets/bimao-badge.png" alt="BIMAO — Banque des Institutions Mutualistes d'Afrique de l'Ouest">
           </div>
 
@@ -187,12 +228,12 @@
             </svg>
           </div>
 
-          <h2 class="text-base font-bold text-white mt-5">Connexion rapide avec Face ID</h2>
-          <p class="text-xs text-subtitle mt-2 max-w-[220px] leading-relaxed">
+          <h2 class="hidden md:block text-base font-bold text-white mt-5">Connexion rapide avec Face ID</h2>
+          <p class="hidden md:block text-xs text-subtitle mt-2 max-w-[220px] leading-relaxed">
             Utilisez la reconnaissance faciale, l'empreinte ou Windows Hello de votre appareil pour vous connecter sans mot de passe.
           </p>
 
-          <button id="faceid-btn" type="button" class="faceid-btn mt-5 w-full max-w-[220px] inline-flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold">
+          <button id="faceid-btn" type="button" class="faceid-btn mt-5 inline-flex items-center justify-center text-sm font-semibold">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M4 8V6a2 2 0 0 1 2-2h2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
               <path d="M20 8V6a2 2 0 0 0-2-2h-2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
