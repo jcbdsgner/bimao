@@ -48,12 +48,12 @@
       width: 1px;
       background: linear-gradient(180deg, transparent, rgba(255,255,255,0.12), transparent);
     }
-    /* Brand badge above the Face ID panel — the exact wordmark lockup exported from the
-       Figma source (image 6), cropped to a 109x30.77 pill the same way the design does:
-       scaled to fill the width, then the top/bottom sliver is clipped via overflow. Plain
-       CSS because css/tailwind.build.css is a static pre-built file (no live Tailwind
-       build wired up for app/public/), so arbitrary-value utility classes silently compile
-       to nothing. */
+    /* Brand badge above the QR code (desktop) / heading (mobile) — the exact wordmark
+       lockup exported from the Figma source (image 6), cropped to a 109x30.77 pill the
+       same way the design does: scaled to fill the width, then the top/bottom sliver is
+       clipped via overflow. Plain CSS because css/tailwind.build.css is a static
+       pre-built file (no live Tailwind build wired up for app/public/), so arbitrary-
+       value utility classes silently compile to nothing. */
     .brand-badge-mini {
       position: relative;
       width: 109px;
@@ -93,16 +93,11 @@
     #login-form button[type="submit"]:hover {
       background-color: #0000a0;
     }
-    /* Desktop-only circular Face ID icon above the heading — on mobile the icon lives
-       inside the big square button itself instead, so this stays hidden below md. */
-    .faceid-icon-wrap {
-      display: none;
-      width: 64px;
-      height: 64px;
-      border-radius: 18px;
-      background-color: rgba(81, 162, 255, 0.1);
-      border: 1px solid rgba(81, 162, 255, 0.25);
+    .qr-card-shadow {
+      box-shadow: 0px 20px 12.5px rgba(0, 0, 0, 0.1), 0px 8px 5px rgba(0, 0, 0, 0.1);
     }
+    /* Mobile-only Face ID login: a single big square button — icon on top, label below.
+       Desktop keeps the original QR code panel instead (see the markup below). */
     .faceid-btn {
       background-color: transparent;
       border: 1px solid #334155;
@@ -123,9 +118,6 @@
     .faceid-status.is-success {
       color: #4ade80;
     }
-    /* Mobile: the Face ID panel collapses to a single big square button — icon on top,
-       label below, no separate heading/description/circle (those are desktop-only,
-       see the md breakpoint block further down). */
     #faceid-btn {
       flex-direction: column;
       width: 100%;
@@ -140,26 +132,6 @@
     #faceid-btn svg {
       width: 34px;
       height: 34px;
-    }
-    @media (min-width: 768px) {
-      .faceid-icon-wrap {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      #faceid-btn {
-        flex-direction: row;
-        width: 100%;
-        max-width: 220px;
-        aspect-ratio: auto;
-        border-radius: 12px;
-        gap: 8px;
-        padding: 12px 16px;
-      }
-      #faceid-btn svg {
-        width: 16px;
-        height: 16px;
-      }
     }
   </style>
 </head>
@@ -209,41 +181,37 @@
         <!-- Divider -->
         <div class="hidden md:block auth-divider"></div>
 
-        <!-- Right: biometric login -->
+        <!-- Right: QR code (desktop) / Face ID (mobile) -->
         <div class="flex flex-col items-center justify-center text-center pt-8 md:pt-0 border-t md:border-t-0 border-white/5">
           <div class="brand-badge-mini hidden md:block">
             <img src="assets/bimao-badge.png" alt="BIMAO — Banque des Institutions Mutualistes d'Afrique de l'Ouest">
           </div>
 
-          <div class="faceid-icon-wrap">
-            <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M4 9V6.5a2.5 2.5 0 0 1 2.5-2.5H9" stroke="#51a2ff" stroke-width="1.8" stroke-linecap="round"/>
-              <path d="M26 9V6.5A2.5 2.5 0 0 0 23.5 4H21" stroke="#51a2ff" stroke-width="1.8" stroke-linecap="round"/>
-              <path d="M4 21v2.5A2.5 2.5 0 0 0 6.5 26H9" stroke="#51a2ff" stroke-width="1.8" stroke-linecap="round"/>
-              <path d="M26 21v2.5a2.5 2.5 0 0 1-2.5 2.5H21" stroke="#51a2ff" stroke-width="1.8" stroke-linecap="round"/>
-              <circle cx="12" cy="13" r="1.1" fill="#e2e8f0"/>
-              <circle cx="18" cy="13" r="1.1" fill="#e2e8f0"/>
-              <path d="M15 12.5v3c0 .6.5 1 1 1" stroke="#e2e8f0" stroke-width="1.3" stroke-linecap="round"/>
-              <path d="M11 19c1.2 1 2.6 1.5 4 1.5s2.8-.5 4-1.5" stroke="#e2e8f0" stroke-width="1.3" stroke-linecap="round"/>
-            </svg>
+          <!-- Desktop: QR code -->
+          <div class="hidden md:block">
+            <div class="bg-white rounded-2xl p-4 qr-card-shadow">
+              <img src="assets/qr-placeholder.png" alt="Code QR de connexion BIMAO" class="w-40 h-40 sm:w-44 sm:h-44 object-contain">
+            </div>
+            <h2 class="text-base font-bold text-white mt-6">Connexion rapide par QR code</h2>
+            <p class="text-xs text-subtitle mt-2 max-w-[220px] leading-relaxed">
+              Scannez ce code avec votre téléphone pour un accès instantané.
+            </p>
           </div>
 
-          <h2 class="hidden md:block text-base font-bold text-white mt-5">Connexion rapide avec Face ID</h2>
-          <p class="hidden md:block text-xs text-subtitle mt-2 max-w-[220px] leading-relaxed">
-            Utilisez la reconnaissance faciale, l'empreinte ou Windows Hello de votre appareil pour vous connecter sans mot de passe.
-          </p>
+          <!-- Mobile: Face ID -->
+          <div class="md:hidden w-full">
+            <button id="faceid-btn" type="button" class="faceid-btn inline-flex items-center justify-center text-sm font-semibold">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 8V6a2 2 0 0 1 2-2h2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M20 8V6a2 2 0 0 0-2-2h-2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M4 16v2a2 2 0 0 0 2 2h2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M20 16v2a2 2 0 0 1-2 2h-2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              Se connecter avec Face ID
+            </button>
 
-          <button id="faceid-btn" type="button" class="faceid-btn mt-5 inline-flex items-center justify-center text-sm font-semibold">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M4 8V6a2 2 0 0 1 2-2h2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <path d="M20 8V6a2 2 0 0 0-2-2h-2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <path d="M4 16v2a2 2 0 0 0 2 2h2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <path d="M20 16v2a2 2 0 0 1-2 2h-2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-            Se connecter avec Face ID
-          </button>
-
-          <p id="faceid-status" class="faceid-status text-[11px] text-label mt-3"></p>
+            <p id="faceid-status" class="faceid-status text-[11px] text-label mt-3"></p>
+          </div>
         </div>
 
       </div>
