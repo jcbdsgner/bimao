@@ -48,22 +48,28 @@
       width: 1px;
       background: linear-gradient(180deg, transparent, rgba(255,255,255,0.12), transparent);
     }
-    /* Brand badge above the QR code (desktop) / heading (mobile) — full BIMAO wordmark
-       lockup (bimao-badge.png, 400x150) at its natural aspect ratio, no crop. Plain CSS
-       because css/tailwind.build.css is a static pre-built file (no live Tailwind build
-       wired up for app/public/), so arbitrary-value utility classes silently compile to
-       nothing. */
+    /* Brand badge above the QR code (desktop) / heading (mobile) — the exact wordmark
+       lockup exported from the Figma source (image 6), cropped to a 109x30.77 pill the
+       same way the design does: scaled to fill the width, then the top/bottom sliver is
+       clipped via overflow. Plain CSS because css/tailwind.build.css is a static
+       pre-built file (no live Tailwind build wired up for app/public/), so arbitrary-
+       value utility classes silently compile to nothing. */
     .brand-badge-mini {
-      width: 180px;
+      position: relative;
+      width: 109px;
+      height: 30.77px;
       border-radius: 8px;
       background-color: #ffffff;
-      padding: 6px 10px;
+      overflow: hidden;
       margin-bottom: 24px;
     }
     .brand-badge-mini img {
-      display: block;
+      position: absolute;
       width: 100%;
-      height: auto;
+      max-width: none;
+      height: 132.84%;
+      left: -0.24%;
+      top: -13.88%;
     }
     /* Required-field asterisk and the "forgot password" link use exact design hexes that
        aren't in the Tailwind palette (rose-500 / blue-400 are close but not exact). */
@@ -89,6 +95,11 @@
     }
     .qr-card-shadow {
       box-shadow: 0px 20px 12.5px rgba(0, 0, 0, 0.1), 0px 8px 5px rgba(0, 0, 0, 0.1);
+      padding: 12px;
+    }
+    .qr-code-img {
+      width: 128px;
+      height: 128px;
     }
     /* Mobile-only Face ID login: a single big square button — icon on top, label below.
        Desktop keeps the original QR code panel instead (see the markup below). */
@@ -183,8 +194,8 @@
 
           <!-- Desktop: QR code -->
           <div class="hidden md:block">
-            <div class="bg-white rounded-2xl p-4 qr-card-shadow">
-              <img src="assets/qr-placeholder.png" alt="Code QR de connexion BIMAO" class="w-40 h-40 sm:w-44 sm:h-44 object-contain">
+            <div class="bg-white rounded-2xl qr-card-shadow">
+              <img src="assets/qr-placeholder.png" alt="Code QR de connexion BIMAO" class="qr-code-img object-contain">
             </div>
             <h2 class="text-base font-bold text-white mt-6">Connexion rapide par QR code</h2>
             <p class="text-xs text-subtitle mt-2 max-w-[220px] leading-relaxed">
