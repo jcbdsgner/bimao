@@ -3,12 +3,13 @@ import { ArrowRight } from "lucide-react";
 import { Header } from "@/components/layout/Header";
 import { Card } from "@/components/ui/card";
 import { FailureCausesChart } from "@/components/digital-flux/charts/FailureCausesChart";
-import { type Period, bankToWalletByPeriod, monetiqueByPeriod, fmtMds, fmtNum, fmtPct } from "@/lib/period-data";
+import { type Period, type Agency, bankToWalletByPeriod, monetiqueByPeriod, fmtMds, fmtNum, fmtPct } from "@/lib/period-data";
 
 export function DigitalFlux() {
   const [period, setPeriod] = useState<Period>("mois");
-  const data = bankToWalletByPeriod[period];
-  const monetique = monetiqueByPeriod[period];
+  const [agency, setAgency] = useState<Agency>("all");
+  const data = bankToWalletByPeriod[period][agency];
+  const monetique = monetiqueByPeriod[period][agency];
 
   const failureCauses = [
     { cause: "Solde insuffisant", wave: data.wave.causeSoldeInsuffisant, orange: data.orange.causeSoldeInsuffisant },
@@ -18,10 +19,10 @@ export function DigitalFlux() {
   return (
     <>
       <Header
-        title="Tableau de Pilotage Exécutif"
-        subtitle="Données arrêtées au 31 Janvier 2026"
         period={period}
         onPeriodChange={(value) => setPeriod(value as Period)}
+        agency={agency}
+        onAgencyChange={(value) => setAgency(value as Agency)}
       />
       <main className="max-w-[1400px] space-y-6 p-4 sm:space-y-8 sm:p-8">
         <div className="flex flex-col justify-between gap-4 border-b border-border pb-5 sm:flex-row sm:items-center">
@@ -161,33 +162,35 @@ export function DigitalFlux() {
             </div>
           </Card>
 
-          <Card className="flex flex-col justify-between space-y-6 rounded-[1.25rem] border-border bg-card p-4 sm:p-6 lg:col-span-5">
-            <div className="space-y-5">
-              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border pb-2">
-                <div>
-                  <h3 className="text-base font-semibold text-slate-300">Cartes &amp; Réseau Monétique</h3>
-                  <p className="mt-0.5 text-xs text-muted-foreground">GAB, TPE et interbancarité GIM-UEMOA</p>
+          <a
+            href="/monetique-cartes"
+            className="group block rounded-[1.25rem] transition-opacity hover:opacity-90 lg:col-span-5"
+          >
+            <Card className="flex h-full flex-col justify-between space-y-6 rounded-[1.25rem] border-border bg-card p-4 sm:p-6">
+              <div className="space-y-5">
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border pb-2">
+                  <div>
+                    <h3 className="text-base font-semibold text-slate-300">Cartes &amp; Réseau Monétique</h3>
+                    <p className="mt-0.5 text-xs text-muted-foreground">GAB, TPE et interbancarité GIM-UEMOA</p>
+                  </div>
+                  <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full border border-white/5 bg-white/5 px-2 py-0.5 text-[11px] font-semibold text-slate-300">
+                    <span className="text-emerald-400">●</span> {fmtPct(monetique.failureRate)} échec
+                  </span>
                 </div>
-                <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full border border-white/5 bg-white/5 px-2 py-0.5 text-[11px] font-semibold text-slate-300">
-                  <span className="text-emerald-400">●</span> {fmtPct(monetique.failureRate)} échec
-                </span>
+
+                <p className="text-xs text-muted-foreground">
+                  Cartes émises, transactions GAB/TPE et taux d'échec monétique sont désormais suivis en détail sur la
+                  page dédiée Monétique — voir le tableau de bord complet pour la répartition par produit et par type
+                  d'opération.
+                </p>
               </div>
 
-              <p className="text-xs text-muted-foreground">
-                Cartes émises, transactions GAB/TPE et taux d'échec monétique sont désormais suivis en détail sur la
-                page dédiée Monétique — voir le tableau de bord complet pour la répartition par produit et par type
-                d'opération.
-              </p>
-            </div>
-
-            <a
-              href="/monetique-cartes"
-              className="group flex items-center justify-between gap-2 rounded-[0.875rem] border border-white/5 bg-secondary/40 p-4 transition-colors hover:border-white/20"
-            >
-              <span className="text-xs font-semibold text-white">Voir le détail complet — Cartes &amp; Transactions</span>
-              <ArrowRight className="h-4 w-4 shrink-0 text-slate-400 transition-all group-hover:translate-x-0.5 group-hover:text-white" />
-            </a>
-          </Card>
+              <div className="flex items-center justify-between gap-2 rounded-[0.875rem] border border-white/5 bg-secondary/40 p-4 transition-colors group-hover:border-white/20">
+                <span className="text-xs font-semibold text-white">Voir le détail complet — Cartes &amp; Transactions</span>
+                <ArrowRight className="h-4 w-4 shrink-0 text-slate-400 transition-all group-hover:translate-x-0.5 group-hover:text-white" />
+              </div>
+            </Card>
+          </a>
         </div>
       </main>
     </>

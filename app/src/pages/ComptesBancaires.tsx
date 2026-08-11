@@ -9,19 +9,20 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { type Period, comptesByPeriod, fmtNum, fmtPct } from "@/lib/period-data";
+import { type Period, type Agency, comptesByPeriod, fmtNum, fmtPct } from "@/lib/period-data";
 
 export function ComptesBancaires() {
   const [period, setPeriod] = useState<Period>("mois");
-  const comptes = comptesByPeriod[period];
+  const [agency, setAgency] = useState<Agency>("all");
+  const comptes = comptesByPeriod[period][agency];
 
   return (
     <>
       <Header
-        title="Tableau de Pilotage Exécutif"
-        subtitle="Données arrêtées au 31 Janvier 2026"
         period={period}
         onPeriodChange={(value) => setPeriod(value as Period)}
+        agency={agency}
+        onAgencyChange={(value) => setAgency(value as Agency)}
       />
       <main className="max-w-[1400px] space-y-6 p-4 sm:space-y-8 sm:p-8">
         <div className="flex flex-col justify-between gap-4 border-b border-border pb-5 sm:flex-row sm:items-center">

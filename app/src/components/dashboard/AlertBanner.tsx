@@ -1,10 +1,10 @@
 import { Card } from "@/components/ui/card";
 import alertBannerBg from "@/assets/alert-banner-bg.jpg";
-import { type Period, creditRisqueByPeriod, bankToWalletByPeriod, fmtMds, fmtNum, fmtPct } from "@/lib/period-data";
+import { type Period, type Agency, creditRisqueByPeriod, bankToWalletByPeriod, fmtMds, fmtNum, fmtPct } from "@/lib/period-data";
 
-export function AlertBanner({ period = "mois" }: { period?: Period }) {
-  const creditRisque = creditRisqueByPeriod[period];
-  const bankToWallet = bankToWalletByPeriod[period];
+export function AlertBanner({ period = "mois", agency = "all" }: { period?: Period; agency?: Agency }) {
+  const creditRisque = creditRisqueByPeriod[period][agency];
+  const bankToWallet = bankToWalletByPeriod[period][agency];
 
   return (
     <Card

@@ -7,10 +7,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { type Period, creditRisqueByPeriod, fmtMds, fmtPct } from "@/lib/period-data";
+import { type Period, type Agency, creditRisqueByPeriod, fmtMds, fmtPct } from "@/lib/period-data";
 
-export function CreditRiskOverview({ period = "mois" }: { period?: Period }) {
-  const data = creditRisqueByPeriod[period];
+export function CreditRiskOverview({ period = "mois", agency = "all" }: { period?: Period; agency?: Agency }) {
+  const data = creditRisqueByPeriod[period][agency];
   const restructuresPct = round1(100 - data.sainsPct - data.nplPct);
 
   const rows = [

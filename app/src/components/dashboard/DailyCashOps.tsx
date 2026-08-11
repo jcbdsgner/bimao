@@ -1,8 +1,8 @@
 import { Card } from "@/components/ui/card";
-import { dailyCashOps, fmtMds, fmtNum, fmtPct } from "@/lib/period-data";
+import { type Agency, dailyCashOpsByAgency, fmtMds, fmtNum, fmtPct } from "@/lib/period-data";
 
-export function DailyCashOps() {
-  const { date, depots, retraits, soldeNetM } = dailyCashOps;
+export function DailyCashOps({ agency = "all" }: { agency?: Agency }) {
+  const { date, depots, retraits, soldeNetM } = dailyCashOpsByAgency[agency];
 
   return (
     <Card className="space-y-5 rounded-[1.25rem] border-border bg-card p-4 sm:p-6">

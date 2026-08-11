@@ -6,6 +6,7 @@ import { PortfolioMixChart } from "@/components/dashboard/charts/PortfolioMixCha
 import { AccountTypeDonut } from "@/components/clients/charts/AccountTypeDonut";
 import {
   type Period,
+  type Agency,
   PERIOD_COMPARISON_LABEL,
   clientBaseByPeriod,
   comptesByPeriod,
@@ -36,20 +37,21 @@ const PORTFOLIO_COLORS = [
 
 export function Clients() {
   const [period, setPeriod] = useState<Period>("mois");
+  const [agency, setAgency] = useState<Agency>("all");
 
-  const clientBase = clientBaseByPeriod[period];
-  const comptes = comptesByPeriod[period];
-  const accountTypeDonutData = accountTypeDonutByPeriod[period];
-  const portfolioMix = portfolioMixByPeriod[period];
+  const clientBase = clientBaseByPeriod[period][agency];
+  const comptes = comptesByPeriod[period][agency];
+  const accountTypeDonutData = accountTypeDonutByPeriod[period][agency];
+  const portfolioMix = portfolioMixByPeriod[period][agency];
   const comparisonLabel = PERIOD_COMPARISON_LABEL[period];
 
   return (
     <>
       <Header
-        title="Tableau de Pilotage Exécutif"
-        subtitle="Données arrêtées au 31 Janvier 2026"
         period={period}
         onPeriodChange={(value) => setPeriod(value as Period)}
+        agency={agency}
+        onAgencyChange={(value) => setAgency(value as Agency)}
       />
       <main className="max-w-[1400px] space-y-6 p-4 sm:space-y-8 sm:p-8">
         <div className="flex flex-col justify-between gap-4 border-b border-border pb-5 sm:flex-row sm:items-center">
@@ -84,58 +86,55 @@ export function Clients() {
             }
           />
 
-          <KpiCard
-            label="Comptes Bancaires Liés"
-            pill={<>{comptes.typesDistincts} types</>}
-            value={fmtNum(comptes.ouverts)}
-            footLeft="Portefeuille consolidé"
-            footRight={
-              <a href="/comptes-bancaires" className="font-semibold text-blue-400 hover:text-blue-300">
-                Détail →
-              </a>
-            }
-          />
+          <a href="/comptes-bancaires" className="block rounded-[1.25rem] transition-opacity hover:opacity-90">
+            <KpiCard
+              label="Comptes Bancaires Liés"
+              pill={<>{comptes.typesDistincts} types</>}
+              value={fmtNum(comptes.ouverts)}
+              footLeft="Portefeuille consolidé"
+              footRight={<span className="font-semibold text-blue-400">Détail →</span>}
+            />
+          </a>
         </div>
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-          <Card className="space-y-5 rounded-[1.25rem] border-border bg-card p-4 sm:p-6">
-            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border pb-2">
-              <div>
-                <h2 className="text-base font-semibold text-slate-300">Répartition par Type de Compte</h2>
-                <p className="mt-0.5 text-xs text-muted-foreground">
-                  {fmtNum(comptes.ouverts)} comptes, {comptes.typesDistincts} types référencés
-                </p>
-              </div>
-            </div>
-
-            <div className="flex flex-col items-center gap-4 pt-1">
-              <AccountTypeDonut data={accountTypeDonutData} total={comptes.ouverts} />
-
-              <div className="w-full space-y-2 text-xs">
-                {accountTypeDonutData.map((row, index) => (
-                  <div key={row.type} className="flex items-center justify-between gap-2">
-                    <span className="flex items-center gap-1.5 whitespace-nowrap">
-                      <span
-                        className="h-2 w-2 shrink-0 rounded-full"
-                        style={{ backgroundColor: DONUT_COLORS[index % DONUT_COLORS.length] }}
-                      />
-                      <strong className="font-semibold text-white">{row.type}</strong>
-                    </span>
-                    <span className="tabular-nums text-muted-foreground">
-                      {fmtNum(row.total)} ({fmtPct(row.value)})
-                    </span>
-                  </div>
-                ))}
+          <a href="/comptes-bancaires" className="block rounded-[1.25rem] transition-opacity hover:opacity-90">
+            <Card className="space-y-5 rounded-[1.25rem] border-border bg-card p-4 sm:p-6">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border pb-2">
+                <div>
+                  <h2 className="text-base font-semibold text-slate-300">Répartition par Type de Compte</h2>
+                  <p className="mt-0.5 text-xs text-muted-foreground">
+                    {fmtNum(comptes.ouverts)} comptes, {comptes.typesDistincts} types référencés
+                  </p>
+                </div>
               </div>
 
-              <a
-                href="/comptes-bancaires"
-                className="self-start text-xs font-semibold text-blue-400 hover:text-blue-300"
-              >
-                Détail des {comptes.typesDistincts} types de comptes →
-              </a>
-            </div>
-          </Card>
+              <div className="flex flex-col items-center gap-4 pt-1">
+                <AccountTypeDonut data={accountTypeDonutData} total={comptes.ouverts} />
+
+                <div className="w-full space-y-2 text-xs">
+                  {accountTypeDonutData.map((row, index) => (
+                    <div key={row.type} className="flex items-center justify-between gap-2">
+                      <span className="flex items-center gap-1.5 whitespace-nowrap">
+                        <span
+                          className="h-2 w-2 shrink-0 rounded-full"
+                          style={{ backgroundColor: DONUT_COLORS[index % DONUT_COLORS.length] }}
+                        />
+                        <strong className="font-semibold text-white">{row.type}</strong>
+                      </span>
+                      <span className="tabular-nums text-muted-foreground">
+                        {fmtNum(row.total)} ({fmtPct(row.value)})
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                <span className="self-start text-xs font-semibold text-blue-400">
+                  Détail des {comptes.typesDistincts} types de comptes →
+                </span>
+              </div>
+            </Card>
+          </a>
 
           <Card className="space-y-4 rounded-[1.25rem] border-border bg-card p-4 sm:p-6">
             <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border pb-1">

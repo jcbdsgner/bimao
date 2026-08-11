@@ -1,8 +1,8 @@
 import { Card } from "@/components/ui/card";
-import { type Period, bankToWalletByPeriod, fmtMds, fmtNum, fmtPct } from "@/lib/period-data";
+import { type Period, type Agency, bankToWalletByPeriod, fmtMds, fmtNum, fmtPct } from "@/lib/period-data";
 
-export function BankToWalletSummary({ period = "mois" }: { period?: Period }) {
-  const data = bankToWalletByPeriod[period];
+export function BankToWalletSummary({ period = "mois", agency = "all" }: { period?: Period; agency?: Agency }) {
+  const data = bankToWalletByPeriod[period][agency];
 
   return (
     <Card className="space-y-5 rounded-[1.25rem] border-border bg-card p-4 sm:p-6">

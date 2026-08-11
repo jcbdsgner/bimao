@@ -25,8 +25,6 @@ export function CarthagoGap() {
   return (
     <>
       <Header
-        title="Tableau de Pilotage Exécutif"
-        subtitle="Données arrêtées au 31 Janvier 2026"
       />
       <main className="max-w-[1400px] space-y-6 p-4 sm:space-y-8 sm:p-8">
         <div className="flex flex-col justify-between gap-4 border-b border-border pb-5 sm:flex-row sm:items-center">

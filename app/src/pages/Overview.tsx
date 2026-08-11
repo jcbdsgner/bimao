@@ -9,6 +9,7 @@ import { DailyCashOps } from "@/components/dashboard/DailyCashOps";
 import { CarthagoCoverage } from "@/components/dashboard/CarthagoCoverage";
 import {
   type Period,
+  type Agency,
   PERIOD_COMPARISON_LABEL,
   clientBaseByPeriod,
   creditRisqueByPeriod,
@@ -22,23 +23,24 @@ import {
 
 export function Overview() {
   const [period, setPeriod] = useState<Period>("mois");
+  const [agency, setAgency] = useState<Agency>("all");
 
-  const clientBase = clientBaseByPeriod[period];
-  const creditRisque = creditRisqueByPeriod[period];
-  const positionNette = positionNetteByPeriod[period];
-  const bankToWallet = bankToWalletByPeriod[period];
+  const clientBase = clientBaseByPeriod[period][agency];
+  const creditRisque = creditRisqueByPeriod[period][agency];
+  const positionNette = positionNetteByPeriod[period][agency];
+  const bankToWallet = bankToWalletByPeriod[period][agency];
   const comparisonLabel = PERIOD_COMPARISON_LABEL[period];
 
   return (
     <>
       <Header
-        title="Tableau de Pilotage Exécutif"
-        subtitle="Données arrêtées au 31 Janvier 2026"
         period={period}
         onPeriodChange={(value) => setPeriod(value as Period)}
+        agency={agency}
+        onAgencyChange={(value) => setAgency(value as Agency)}
       />
       <main className="max-w-[1400px] space-y-6 p-4 sm:space-y-8 sm:p-8">
-      <AlertBanner period={period} />
+      <AlertBanner period={period} agency={agency} />
 
       <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
         <KpiCard
@@ -85,57 +87,61 @@ export function Overview() {
           />
         </a>
 
-        <KpiCard
-          label="Encours Actif"
-          pill={
-            <>
-              <span className="text-rose-400">●</span> {fmtPct(creditRisque.nplPct)} NPL
-            </>
-          }
-          value={fmtMds(creditRisque.encoursActifMds)}
-          unit="Mds FCFA"
-          footLeft={
-            <>
-              Sains: <strong className="font-semibold text-slate-300">{fmtMds(creditRisque.sainsMds)} Mds</strong>
-            </>
-          }
-          footRight={
-            <>
-              Douteux: <strong className="font-semibold text-slate-300">{fmtMds(creditRisque.douteuxMds)} Mds</strong>
-            </>
-          }
-        />
+        <a href="/credit-risque" className="block rounded-[1.25rem] transition-opacity hover:opacity-90">
+          <KpiCard
+            label="Encours Actif"
+            pill={
+              <>
+                <span className="text-rose-400">●</span> {fmtPct(creditRisque.nplPct)} NPL
+              </>
+            }
+            value={fmtMds(creditRisque.encoursActifMds)}
+            unit="Mds FCFA"
+            footLeft={
+              <>
+                Sains: <strong className="font-semibold text-slate-300">{fmtMds(creditRisque.sainsMds)} Mds</strong>
+              </>
+            }
+            footRight={
+              <>
+                Douteux: <strong className="font-semibold text-slate-300">{fmtMds(creditRisque.douteuxMds)} Mds</strong>
+              </>
+            }
+          />
+        </a>
 
-        <KpiCard
-          label="Bank-To-Wallet"
-          pill={
-            <>
-              <span className="text-rose-400">●</span> {fmtPct(bankToWallet.failureRate)} Rejet
-            </>
-          }
-          value={fmtNum(bankToWallet.total)}
-          unit="demandes"
-          footLeft={
-            <>
-              Succès: <strong className="font-semibold text-slate-300">{fmtPct(bankToWallet.successRate)}</strong>
-            </>
-          }
-          footRight={
-            <>
-              Cartes: <strong className="font-semibold text-slate-300">0,53% échec</strong>
-            </>
-          }
-        />
+        <a href="/digital-flux" className="block rounded-[1.25rem] transition-opacity hover:opacity-90">
+          <KpiCard
+            label="Bank-To-Wallet"
+            pill={
+              <>
+                <span className="text-rose-400">●</span> {fmtPct(bankToWallet.failureRate)} Rejet
+              </>
+            }
+            value={fmtNum(bankToWallet.total)}
+            unit="demandes"
+            footLeft={
+              <>
+                Succès: <strong className="font-semibold text-slate-300">{fmtPct(bankToWallet.successRate)}</strong>
+              </>
+            }
+            footRight={
+              <>
+                Cartes: <strong className="font-semibold text-slate-300">0,53% échec</strong>
+              </>
+            }
+          />
+        </a>
       </div>
 
-      <TrendChartsRow period={period} />
+      <TrendChartsRow period={period} agency={agency} />
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
-        <CreditRiskOverview period={period} />
+        <CreditRiskOverview period={period} agency={agency} />
 
         <div className="space-y-6 lg:col-span-5">
-          <DailyCashOps />
-          <BankToWalletSummary period={period} />
+          <DailyCashOps agency={agency} />
+          <BankToWalletSummary period={period} agency={agency} />
           <CarthagoCoverage />
         </div>
       </div>

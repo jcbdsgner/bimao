@@ -10,14 +10,15 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { TwoSliceDonut } from "@/components/charts/TwoSliceDonut";
-import { type Period, creditRisqueByPeriod, fmtMds, fmtPct, fmtSigned } from "@/lib/period-data";
+import { type Period, type Agency, creditRisqueByPeriod, fmtMds, fmtPct, fmtSigned } from "@/lib/period-data";
 
 const NPL_SCALE_MAX = 50; // échelle de référence de la jauge réglementaire (fixe)
 const NPL_PLAFOND = 15;
 
 export function CreditRisque() {
   const [period, setPeriod] = useState<Period>("mois");
-  const data = creditRisqueByPeriod[period];
+  const [agency, setAgency] = useState<Agency>("all");
+  const data = creditRisqueByPeriod[period][agency];
 
   const impayesRows = [
     {
@@ -65,10 +66,10 @@ export function CreditRisque() {
   return (
     <>
       <Header
-        title="Tableau de Pilotage Exécutif"
-        subtitle="Données arrêtées au 31 Janvier 2026"
         period={period}
         onPeriodChange={(value) => setPeriod(value as Period)}
+        agency={agency}
+        onAgencyChange={(value) => setAgency(value as Agency)}
       />
       <main className="max-w-[1400px] space-y-6 p-4 sm:space-y-8 sm:p-8">
         <div className="flex flex-col justify-between gap-4 border-b border-border pb-5 sm:flex-row sm:items-center">
@@ -303,10 +304,42 @@ export function CreditRisque() {
                   Le portefeuille dépasse le plafond réglementaire de {NPL_PLAFOND},0% de{" "}
                   <strong className="text-rose-400">{fmtMds(data.depassementPts)} points de pourcentage</strong> ({fmtMds(data.douteuxMds)} Mds FCFA exposés).
                 </p>
-                <p className="text-[12px] text-slate-400">
-                  • <strong className="text-slate-200">Impact Fonds Propres :</strong> Exigence de provisionnement
-                  complémentaire obligatoire sous peine de sanction BCEAO.
-                </p>
+              </div>
+            </Card>
+
+            <Card className="space-y-5 rounded-[1.25rem] border-border bg-card p-4 sm:p-6">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border pb-3">
+                <div>
+                  <span className="block text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                    COMPTES PORTEURS DE CRÉDIT
+                  </span>
+                  <h3 className="mt-0.5 text-base font-bold text-white">Encours par Segment Client</h3>
+                </div>
+              </div>
+
+              <TwoSliceDonut
+                data={data.encoursBySegment}
+                nameKey="segment"
+                valueKey="montant"
+                unit="Mds FCFA"
+                colors={["var(--chart-3)", "var(--chart-1)", "var(--chart-6)"]}
+              />
+
+              <div className="space-y-2 text-xs">
+                {data.encoursBySegment.map((row, index) => (
+                  <div key={row.segment} className="flex items-center justify-between gap-2">
+                    <span className="flex items-center gap-1.5 whitespace-nowrap text-muted-foreground">
+                      <span
+                        className="h-2 w-2 shrink-0 rounded-full"
+                        style={{ backgroundColor: ["var(--chart-3)", "var(--chart-1)", "var(--chart-6)"][index] }}
+                      />
+                      {row.segment}
+                    </span>
+                    <span className="tabular-nums text-white">
+                      {fmtMds(row.montant)} Mds ({fmtPct((row.montant / data.encoursActifMds) * 100)})
+                    </span>
+                  </div>
+                ))}
               </div>
             </Card>
           </div>

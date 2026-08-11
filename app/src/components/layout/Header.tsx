@@ -1,12 +1,5 @@
 import { useState } from "react";
 import { Menu, CalendarRange } from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
@@ -16,6 +9,14 @@ const PERIODS = [
   { value: "semaine", label: "Semaine" },
   { value: "mois", label: "Mois" },
   { value: "trimestre", label: "Trimestre" },
+];
+
+const AGENCIES = [
+  { value: "all", label: "Toutes" },
+  { value: "dakar", label: "Dakar" },
+  { value: "kaolack", label: "Kaolack" },
+  { value: "ziguinchor", label: "Ziguinchor" },
+  { value: "touba", label: "Touba" },
 ];
 
 const dateFr = (iso: string) => {
@@ -40,7 +41,7 @@ function CustomPeriodPicker({
       <PopoverTrigger asChild>
         <button
           type="button"
-          className="flex h-full items-center justify-center gap-1.5 rounded-full px-4 text-[11px] font-semibold text-slate-400 transition-colors hover:text-white data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-[0_4px_12px_rgba(0,0,123,0.5)]"
+          className="flex h-full items-center justify-center gap-1.5 rounded-full px-4 text-[12px] font-semibold text-slate-400 transition-colors hover:text-white data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-[0_4px_12px_rgba(0,0,123,0.5)]"
           data-state={active ? "active" : "inactive"}
         >
           <CalendarRange className="h-3.5 w-3.5" />
@@ -116,21 +117,24 @@ function CustomPeriodPicker({
 }
 
 export function Header({
-  title,
-  subtitle,
   period,
   onPeriodChange,
+  agency,
+  onAgencyChange,
 }: {
-  title: string;
-  subtitle: string;
   period?: string;
   onPeriodChange?: (value: string) => void;
+  agency?: string;
+  onAgencyChange?: (value: string) => void;
 }) {
   const { open } = useMobileNav();
+  const [internalAgency, setInternalAgency] = useState("all");
+  const resolvedAgency = agency ?? internalAgency;
+  const handleAgencyChange = onAgencyChange ?? setInternalAgency;
 
   return (
-    <header className="sticky top-0 z-40 flex flex-wrap items-center justify-between gap-4 border-b border-white/5 bg-card/75 px-4 py-3.5 backdrop-blur-xl sm:px-8">
-      <div className="flex items-center space-x-4">
+    <header className="sticky top-0 z-40 flex flex-wrap items-center justify-between gap-4 border-b border-white/5 bg-card/75 px-4 py-4 backdrop-blur-xl sm:px-8">
+      <div className="flex items-center gap-4">
         <button
           aria-label="Ouvrir le menu"
           onClick={open}
@@ -138,21 +142,31 @@ export function Header({
         >
           <Menu className="h-5 w-5" />
         </button>
-        <div className="hidden sm:block">
-          <h2 className="text-base font-bold tracking-tight text-white">{title}</h2>
-          <p className="text-xs font-medium text-slate-400">{subtitle}</p>
-        </div>
+
+        <Tabs value={resolvedAgency} onValueChange={handleAgencyChange}>
+          <TabsList className="flex !h-[44px] items-center gap-1 rounded-full border border-white/5 bg-background/60 p-1">
+            {AGENCIES.map((a) => (
+              <TabsTrigger
+                key={a.value}
+                value={a.value}
+                className="flex h-full items-center justify-center rounded-full px-5 text-[12px] font-semibold text-slate-400 data-[state=active]:!border-transparent data-[state=active]:!bg-primary data-[state=active]:!text-white data-[state=active]:shadow-[0_4px_12px_rgba(0,0,123,0.5)]"
+              >
+                {a.label}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
       </div>
 
-      <div className="flex items-center space-x-3">
+      <div className="flex flex-wrap items-center gap-3">
         {period !== undefined && onPeriodChange && (
           <Tabs value={period} onValueChange={onPeriodChange}>
-            <TabsList className="flex !h-[42px] items-center gap-1 rounded-full border border-white/5 bg-background/60 p-1">
+            <TabsList className="flex !h-[44px] items-center gap-1 rounded-full border border-white/5 bg-background/60 p-1">
               {PERIODS.map((p) => (
                 <TabsTrigger
                   key={p.value}
                   value={p.value}
-                  className="flex h-full items-center justify-center rounded-full px-5 text-[11px] font-semibold text-slate-400 data-[state=active]:!border-transparent data-[state=active]:!bg-primary data-[state=active]:!text-white data-[state=active]:shadow-[0_4px_12px_rgba(0,0,123,0.5)]"
+                  className="flex h-full items-center justify-center rounded-full px-5 text-[12px] font-semibold text-slate-400 data-[state=active]:!border-transparent data-[state=active]:!bg-primary data-[state=active]:!text-white data-[state=active]:shadow-[0_4px_12px_rgba(0,0,123,0.5)]"
                 >
                   {p.label}
                 </TabsTrigger>
@@ -161,19 +175,6 @@ export function Header({
             </TabsList>
           </Tabs>
         )}
-
-        <div className="hidden items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300 lg:flex">
-          <span className="mr-1.5 text-[11px] font-semibold uppercase text-slate-400">Agence:</span>
-          <Select defaultValue="all">
-            <SelectTrigger className="h-8 rounded-full border-none bg-slate-800/30 px-3 text-xs font-semibold text-white shadow-none focus-visible:ring-0 [&_svg]:opacity-60">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Toutes (Consolidé)</SelectItem>
-              <SelectItem value="dakar">Siège Dakar</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
       </div>
     </header>
   );

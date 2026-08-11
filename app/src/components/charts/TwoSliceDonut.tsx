@@ -11,7 +11,7 @@ export function TwoSliceDonut({
   data: Record<string, unknown>[];
   nameKey: string;
   valueKey: string;
-  colors: [string, string];
+  colors: string[];
   unit?: string;
 }) {
   const config = { [valueKey]: { label: valueKey } } satisfies ChartConfig;
