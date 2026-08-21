@@ -1,4 +1,4 @@
-import { LayoutGrid, Users, Landmark, AlertTriangle, Smartphone, CreditCard, LifeBuoy, BarChart3, LogOut } from "lucide-react";
+import { LayoutGrid, Users, Landmark, AlertTriangle, ArrowLeftRight, Smartphone, CreditCard, LifeBuoy, BarChart3, LogOut } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { logout } from "@/lib/auth";
@@ -14,6 +14,7 @@ export const NAV_ITEMS: NavItem[] = [
   { href: "/clients", label: "Clients", icon: Users },
   { href: "/comptes-bancaires", label: "Comptes Bancaires", icon: Landmark },
   { href: "/credit-risque", label: "Crédit & Risque", icon: AlertTriangle },
+  { href: "/operations-bancaires", label: "Opérations Bancaires", icon: ArrowLeftRight },
   { href: "/digital-flux", label: "Digital & Flux", icon: Smartphone },
   { href: "/monetique-cartes", label: "Monétique", icon: CreditCard },
   { href: "/it-support", label: "IT & Support", icon: LifeBuoy },

@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { KpiCard } from "@/components/dashboard/KpiCard";
 import { PortfolioMixChart } from "@/components/dashboard/charts/PortfolioMixChart";
 import { AccountTypeDonut } from "@/components/clients/charts/AccountTypeDonut";
+import { TwoSliceDonut } from "@/components/charts/TwoSliceDonut";
 import {
   type Period,
   type Agency,
@@ -12,6 +13,7 @@ import {
   comptesByPeriod,
   accountTypeDonutByPeriod,
   portfolioMixByPeriod,
+  clientSegmentByPeriod,
   fmtNum,
   fmtPct,
   fmtSigned,
@@ -43,7 +45,9 @@ export function Clients() {
   const comptes = comptesByPeriod[period][agency];
   const accountTypeDonutData = accountTypeDonutByPeriod[period][agency];
   const portfolioMix = portfolioMixByPeriod[period][agency];
+  const clientSegment = clientSegmentByPeriod[period][agency];
   const comparisonLabel = PERIOD_COMPARISON_LABEL[period];
+  const SEGMENT_COLORS = ["var(--chart-3)", "var(--chart-6)", "var(--chart-1)"];
 
   return (
     <>
@@ -161,6 +165,42 @@ export function Clients() {
             </div>
           </Card>
         </div>
+
+        <Card className="space-y-5 rounded-[1.25rem] border-border bg-card p-4 sm:p-6">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border pb-2">
+            <div>
+              <h2 className="text-base font-semibold text-slate-300">Segmentation Métier de la Clientèle</h2>
+              <p className="mt-0.5 text-xs text-muted-foreground">
+                Regroupement en 3 grands segments d'activité — Retail / SFD &amp; Institutionnels / Corporate &amp; Pro
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-[220px_1fr] sm:items-center">
+            <TwoSliceDonut
+              data={clientSegment}
+              nameKey="segment"
+              valueKey="value"
+              unit="%"
+              colors={SEGMENT_COLORS}
+            />
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+              {clientSegment.map((row, index) => (
+                <div key={row.segment} className="rounded-[0.875rem] border border-white/5 bg-secondary/40 p-3">
+                  <span className="flex items-center gap-1.5 whitespace-nowrap text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                    <span
+                      className="h-2 w-2 shrink-0 rounded-full"
+                      style={{ backgroundColor: SEGMENT_COLORS[index % SEGMENT_COLORS.length] }}
+                    />
+                    {row.segment}
+                  </span>
+                  <div className="mt-2 text-xl font-semibold text-white tabular-nums">{fmtNum(row.count)}</div>
+                  <p className="mt-1 text-xs text-muted-foreground">{fmtPct(row.value)} de la base</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </Card>
       </main>
     </>
   );

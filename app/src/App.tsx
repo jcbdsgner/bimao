@@ -4,6 +4,7 @@ import { Overview } from "@/pages/Overview";
 import { Clients } from "@/pages/Clients";
 import { ComptesBancaires } from "@/pages/ComptesBancaires";
 import { CreditRisque } from "@/pages/CreditRisque";
+import { OperationsBancaires } from "@/pages/OperationsBancaires";
 import { DigitalFlux } from "@/pages/DigitalFlux";
 import { MonetiqueCartes } from "@/pages/MonetiqueCartes";
 import { ItSupport } from "@/pages/ItSupport";
@@ -18,6 +19,7 @@ function App() {
           <Route path="/clients" element={<Clients />} />
           <Route path="/comptes-bancaires" element={<ComptesBancaires />} />
           <Route path="/credit-risque" element={<CreditRisque />} />
+          <Route path="/operations-bancaires" element={<OperationsBancaires />} />
           <Route path="/digital-flux" element={<DigitalFlux />} />
           <Route path="/monetique-cartes" element={<MonetiqueCartes />} />
           <Route path="/it-support" element={<ItSupport />} />

@@ -10,7 +10,15 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { TwoSliceDonut } from "@/components/charts/TwoSliceDonut";
-import { type Period, type Agency, creditRisqueByPeriod, fmtMds, fmtPct, fmtSigned } from "@/lib/period-data";
+import {
+  type Period,
+  type Agency,
+  creditRisqueByPeriod,
+  creditsByTermByPeriod,
+  fmtMds,
+  fmtPct,
+  fmtSigned,
+} from "@/lib/period-data";
 
 const NPL_SCALE_MAX = 50; // échelle de référence de la jauge réglementaire (fixe)
 const NPL_PLAFOND = 15;
@@ -19,6 +27,7 @@ export function CreditRisque() {
   const [period, setPeriod] = useState<Period>("mois");
   const [agency, setAgency] = useState<Agency>("all");
   const data = creditRisqueByPeriod[period][agency];
+  const creditsByTerm = creditsByTermByPeriod[period][agency];
 
   const impayesRows = [
     {
@@ -344,6 +353,46 @@ export function CreditRisque() {
             </Card>
           </div>
         </div>
+
+        <Card className="space-y-6 rounded-[1.25rem] border-border bg-card p-4 sm:p-6">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border pb-2">
+            <div>
+              <h2 className="text-base font-semibold text-slate-300">Portefeuille de Crédit par Type / Durée</h2>
+              <p className="mt-0.5 text-xs text-muted-foreground">
+                Ventilation de l'encours par maturité (court / moyen / long terme), avec taux de créances douteuses par tranche
+              </p>
+            </div>
+          </div>
+
+          <div className="overflow-x-auto pt-1">
+            <Table className="min-w-[480px] text-xs">
+              <TableHeader>
+                <TableRow className="border-border hover:bg-transparent">
+                  <TableHead className="text-muted-foreground">Type de Crédit</TableHead>
+                  <TableHead className="text-right text-muted-foreground">Encours</TableHead>
+                  <TableHead className="text-right text-muted-foreground">Part</TableHead>
+                  <TableHead className="text-right text-muted-foreground">Taux NPL</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {creditsByTerm.map((row) => (
+                  <TableRow key={row.terme} className="border-border/50 text-slate-300 hover:bg-transparent">
+                    <TableCell className="font-medium text-white">{row.terme}</TableCell>
+                    <TableCell className="text-right tabular-nums text-white">{fmtMds(row.montant)} Mds FCFA</TableCell>
+                    <TableCell className="text-right tabular-nums text-muted-foreground">{fmtPct(row.part)}</TableCell>
+                    <TableCell
+                      className={`text-right tabular-nums font-medium ${
+                        row.nplPct > data.nplPct ? "text-rose-400" : "text-emerald-400"
+                      }`}
+                    >
+                      {fmtPct(row.nplPct)}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </Card>
       </main>
     </>
   );

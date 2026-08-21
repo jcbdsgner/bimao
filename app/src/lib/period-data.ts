@@ -146,6 +146,25 @@ export const portfolioMixByPeriod = byPeriodAndAgency((period, agency) => {
   return rows.map((row) => ({ ...row, value: total > 0 ? round((row.count / total) * 100, 1) : 0 }));
 });
 
+// Segmentation clientèle "métier" (page Clients) — regroupement de portfolioMixByPeriod
+// en 3 grands segments d'activité (Retail / SFD & Institutionnels / Corporate & Pro),
+// pour rester cohérent avec la taxonomie déjà utilisée côté risque (encoursBySegment).
+const clientSegmentGroups: [string, string[]][] = [
+  ["Retail", ["Particuliers", "Cotitulaires"]],
+  ["SFD & Institutionnels", ["Banques", "Associations"]],
+  ["Corporate & Pro", ["Entreprises", "Autres"]],
+];
+
+export const clientSegmentByPeriod = byPeriodAndAgency((period, agency) => {
+  const mix = portfolioMixByPeriod[period][agency];
+  const rows = clientSegmentGroups.map(([segment, members]) => ({
+    segment,
+    count: mix.filter((row) => members.includes(row.segment)).reduce((sum, row) => sum + row.count, 0),
+  }));
+  const total = rows.reduce((sum, row) => sum + row.count, 0);
+  return rows.map((row) => ({ ...row, value: total > 0 ? round((row.count / total) * 100, 1) : 0 }));
+});
+
 // ---------------------------------------------------------------------------
 // Comptes Bancaires (page Comptes Bancaires + carte liée sur Clients + AccountTypeDonut)
 // ---------------------------------------------------------------------------
@@ -251,6 +270,25 @@ export const creditRisqueByPeriod = byPeriodAndAgency((period, agency) => {
   };
 });
 
+// Portefeuille de crédit par type/durée (page CreditRisque) — Court / Moyen / Long
+// terme, avec taux de créances douteuses par tranche pour croiser le risque avec
+// la maturité du crédit (montants de base cohérents avec creditsAccordesMds).
+const creditsByTermBase = [
+  { terme: "Court terme (< 1 an)", montant: 52.8, nplPct: 41.6 },
+  { terme: "Moyen terme (1 à 5 ans)", montant: 98.6, nplPct: 37.4 },
+  { terme: "Long terme (> 5 ans)", montant: 48.9, nplPct: 34.8 },
+];
+
+export const creditsByTermByPeriod = byPeriodAndAgency((period, agency) => {
+  const rows = creditsByTermBase.map((row) => ({
+    terme: row.terme,
+    montant: stock(row.montant, period, agency, 1),
+    nplPct: pct(row.nplPct, agency, 0.5),
+  }));
+  const total = rows.reduce((sum, row) => sum + row.montant, 0);
+  return rows.map((row) => ({ ...row, part: total > 0 ? round((row.montant / total) * 100, 1) : 0 }));
+});
+
 // ---------------------------------------------------------------------------
 // Position Nette — flux entrants/sortants (Overview KPI + TrendChartsRow)
 // ---------------------------------------------------------------------------
@@ -263,6 +301,57 @@ export const positionNetteByPeriod = byPeriodAndAgency((period, agency) => {
     solde: round(entrants - sortants, 1),
     volumeTotal: round(entrants + sortants, 1),
     virementsRtgs: flow(16.2, period, agency, 1),
+  };
+});
+
+// ---------------------------------------------------------------------------
+// Opérations Bancaires — Virements & Chèques (page OperationsBancaires)
+// ---------------------------------------------------------------------------
+const chequesRejetCausesBase = [
+  { cause: "Provision insuffisante", count: 13 },
+  { cause: "Signature non conforme", count: 5 },
+  { cause: "Compte clôturé", count: 2 },
+  { cause: "Opposition", count: 2 },
+];
+
+export const operationsBancairesByPeriod = byPeriodAndAgency((period, agency) => {
+  const virementsEmis = { count: flow(1240, period, agency), montantMds: flow(38.6, period, agency, 1) };
+  const virementsRecus = { count: flow(1085, period, agency), montantMds: flow(34.2, period, agency, 1) };
+  const virementsRtgs = { count: flow(96, period, agency), montantMds: flow(16.2, period, agency, 1) };
+  const virementsRejetes = { count: flow(18, period, agency), montantMds: flow(0.4, period, agency, 1) };
+
+  const chequesEmis = { count: flow(340, period, agency), montantMds: flow(9.8, period, agency, 1) };
+  const chequesEncaisses = { count: flow(298, period, agency), montantMds: flow(8.1, period, agency, 1) };
+  const chequesRejetes = { count: flow(22, period, agency), montantMds: flow(0.6, period, agency, 1) };
+
+  const tauxRejetVirements =
+    virementsEmis.count > 0 ? round((virementsRejetes.count / virementsEmis.count) * 100, 2) : 0;
+  const tauxRejetCheques = chequesEmis.count > 0 ? round((chequesRejetes.count / chequesEmis.count) * 100, 2) : 0;
+
+  const causesRejetCheques = chequesRejetCausesBase.map((row) => ({
+    ...row,
+    count: Math.max(flow(row.count, period, agency), row.count > 0 ? 1 : 0),
+  }));
+
+  const volumeByType = [
+    { type: "Virements", montant: round(virementsEmis.montantMds + virementsRecus.montantMds, 1) },
+    { type: "Chèques", montant: round(chequesEmis.montantMds + chequesEncaisses.montantMds, 1) },
+  ];
+
+  return {
+    virementsEmis,
+    virementsRecus,
+    virementsRtgs,
+    virementsRejetes,
+    tauxRejetVirements,
+    chequesEmis,
+    chequesEncaisses,
+    chequesRejetes,
+    tauxRejetCheques,
+    causesRejetCheques,
+    volumeByType,
+    volumeTotalMds: round(volumeByType[0].montant + volumeByType[1].montant, 1),
+    operationsTotalCount: virementsEmis.count + virementsRecus.count + chequesEmis.count,
   };
 });
 
