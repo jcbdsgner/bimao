@@ -11,14 +11,24 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { TwoSliceDonut } from "@/components/charts/TwoSliceDonut";
-import { type Period, type Agency, operationsBancairesByPeriod, fmtMds, fmtNum, fmtPct } from "@/lib/period-data";
+import { DailyCashOps } from "@/components/dashboard/DailyCashOps";
+import {
+  type Period,
+  type Agency,
+  operationsBancairesByPeriod,
+  monetiqueByPeriod,
+  fmtMds,
+  fmtNum,
+  fmtPct,
+} from "@/lib/period-data";
 
-const VOLUME_COLORS = ["var(--chart-3)", "var(--chart-1)"];
+const VOLUME_COLORS = ["var(--chart-3)", "var(--chart-1)", "var(--chart-4)", "var(--chart-6)"];
 
 export function OperationsBancaires() {
   const [period, setPeriod] = useState<Period>("mois");
   const [agency, setAgency] = useState<Agency>("all");
   const data = operationsBancairesByPeriod[period][agency];
+  const monetique = monetiqueByPeriod[period][agency];
 
   const rows = [
     { label: "Virements Émis", count: data.virementsEmis.count, montant: data.virementsEmis.montantMds, taux: null as number | null },
@@ -39,6 +49,21 @@ export function OperationsBancaires() {
       taux: null as number | null,
     },
     { label: "Chèques Rejetés / Impayés", count: data.chequesRejetes.count, montant: data.chequesRejetes.montantMds, taux: data.tauxRejetCheques },
+    { label: "Prélèvements Émis", count: data.prelevementsEmis.count, montant: data.prelevementsEmis.montantMds, taux: null as number | null },
+    {
+      label: "Prélèvements Rejetés",
+      count: data.prelevementsRejetes.count,
+      montant: data.prelevementsRejetes.montantMds,
+      taux: data.tauxRejetPrelevements,
+    },
+    { label: "Effets Domiciliés", count: data.effetsDomicilies.count, montant: data.effetsDomicilies.montantMds, taux: null as number | null },
+    {
+      label: "Effets Encaissés",
+      count: data.effetsEncaisses.count,
+      montant: data.effetsEncaisses.montantMds,
+      taux: null as number | null,
+    },
+    { label: "Effets Impayés", count: data.effetsImpayes.count, montant: data.effetsImpayes.montantMds, taux: data.tauxImpayesEffets },
   ];
 
   return (
@@ -56,7 +81,7 @@ export function OperationsBancaires() {
               MODULE SPÉCIALISÉ — OPÉRATIONS BANCAIRES
             </span>
             <h1 className="mt-0.5 text-2xl font-bold tracking-tight text-white">
-              Virements &amp; Chèques — Suivi des Opérations
+              Suivi des Opérations Bancaires
             </h1>
           </div>
           <div className="inline-flex items-center gap-1 whitespace-nowrap rounded-full border border-white/5 bg-white/5 px-4 py-2 text-right text-sm font-bold text-white">
@@ -65,52 +90,64 @@ export function OperationsBancaires() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-5">
           <Card className="flex min-h-[140px] flex-col justify-between rounded-[1.25rem] border-border bg-card p-4 sm:p-5">
             <span className="block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground sm:text-[12px]">
-              Virements Émis
+              Virements
             </span>
             <div className="mt-2 flex items-baseline gap-1 text-2xl font-semibold tracking-tight text-white tabular-nums sm:text-3xl">
-              {fmtMds(data.virementsEmis.montantMds)} <span className="text-sm font-medium text-slate-500">Mds FCFA</span>
+              {fmtMds(data.volumeByType[0].montant)} <span className="text-sm font-medium text-slate-500">Mds FCFA</span>
             </div>
-            <p className="mt-2 text-xs text-muted-foreground">{fmtNum(data.virementsEmis.count)} opérations</p>
+            <p className="mt-2 text-xs text-muted-foreground">
+              {fmtNum(data.virementsEmis.count + data.virementsRecus.count)} opérations
+            </p>
           </Card>
 
           <Card className="flex min-h-[140px] flex-col justify-between rounded-[1.25rem] border-border bg-card p-4 sm:p-5">
             <span className="block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground sm:text-[12px]">
-              Virements RTGS
+              Chèques
             </span>
             <div className="mt-2 flex items-baseline gap-1 text-2xl font-semibold tracking-tight text-white tabular-nums sm:text-3xl">
-              {fmtMds(data.virementsRtgs.montantMds)} <span className="text-sm font-medium text-slate-500">Mds FCFA</span>
+              {fmtMds(data.volumeByType[1].montant)} <span className="text-sm font-medium text-slate-500">Mds FCFA</span>
             </div>
-            <p className="mt-2 text-xs text-muted-foreground">{fmtNum(data.virementsRtgs.count)} virements interbancaires</p>
+            <p className="mt-2 text-xs text-muted-foreground">
+              {fmtNum(data.chequesEmis.count + data.chequesEncaisses.count)} opérations
+            </p>
           </Card>
 
           <Card className="flex min-h-[140px] flex-col justify-between rounded-[1.25rem] border-border bg-card p-4 sm:p-5">
             <span className="block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground sm:text-[12px]">
-              Chèques Émis
+              Prélèvements
             </span>
             <div className="mt-2 flex items-baseline gap-1 text-2xl font-semibold tracking-tight text-white tabular-nums sm:text-3xl">
-              {fmtMds(data.chequesEmis.montantMds)} <span className="text-sm font-medium text-slate-500">Mds FCFA</span>
+              {fmtMds(data.volumeByType[2].montant)} <span className="text-sm font-medium text-slate-500">Mds FCFA</span>
             </div>
-            <p className="mt-2 text-xs text-muted-foreground">{fmtNum(data.chequesEmis.count)} chèques émis</p>
+            <p className="mt-2 text-xs text-muted-foreground">{fmtNum(data.prelevementsEmis.count)} prélèvements émis</p>
           </Card>
 
           <Card className="flex min-h-[140px] flex-col justify-between rounded-[1.25rem] border-border bg-card p-4 sm:p-5">
-            <div className="flex flex-wrap items-start justify-between gap-x-2 gap-y-1">
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground sm:text-[12px]">
-                Taux de Rejet Chèques
+            <span className="block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground sm:text-[12px]">
+              Effets de Commerce
+            </span>
+            <div className="mt-2 flex items-baseline gap-1 text-2xl font-semibold tracking-tight text-white tabular-nums sm:text-3xl">
+              {fmtMds(data.volumeByType[3].montant)} <span className="text-sm font-medium text-slate-500">Mds FCFA</span>
+            </div>
+            <p className="mt-2 text-xs text-muted-foreground">{fmtNum(data.effetsDomicilies.count)} effets domiciliés</p>
+          </Card>
+
+          <a href="/monetique-cartes" className="block rounded-[1.25rem] transition-opacity hover:opacity-90">
+            <Card className="flex min-h-[140px] flex-col justify-between rounded-[1.25rem] border-border bg-card p-4 sm:p-5">
+              <span className="block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground sm:text-[12px]">
+                Cartes Bancaires
               </span>
-              <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full border border-white/5 bg-white/5 px-2 py-0.5 text-[11px] font-semibold text-slate-300">
-                <span className={data.tauxRejetCheques > 5 ? "text-rose-400" : "text-emerald-400"}>●</span>{" "}
-                {data.tauxRejetCheques > 5 ? "Sous surveillance" : "Sous seuil"}
-              </span>
-            </div>
-            <div className="mt-2 text-2xl font-semibold tracking-tight text-white tabular-nums sm:text-3xl">
-              {fmtPct(data.tauxRejetCheques, 2)}
-            </div>
-            <p className="mt-2 text-xs font-medium text-muted-foreground">{fmtNum(data.chequesRejetes.count)} chèques impayés</p>
-          </Card>
+              <div className="mt-2 flex items-baseline gap-1 text-2xl font-semibold tracking-tight text-white tabular-nums sm:text-3xl">
+                {fmtMds(monetique.volumeM)} <span className="text-sm font-medium text-slate-500">M FCFA</span>
+              </div>
+              <p className="mt-2 text-xs font-semibold text-blue-400">
+                {fmtNum(monetique.transactions)} tx GAB/TPE · Détail →
+              </p>
+            </Card>
+          </a>
         </div>
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
@@ -119,7 +156,7 @@ export function OperationsBancaires() {
               <div>
                 <h2 className="text-base font-semibold text-slate-300">Détail des Opérations</h2>
                 <p className="mt-0.5 text-xs text-muted-foreground">
-                  Virements et chèques — volumes et montants sur la période
+                  Virements, chèques, prélèvements et effets de commerce — volumes et montants sur la période
                 </p>
               </div>
             </div>
@@ -174,7 +211,7 @@ export function OperationsBancaires() {
             <Card className="space-y-5 rounded-[1.25rem] border-border bg-card p-4 sm:p-6">
               <div className="border-b border-border pb-2">
                 <h3 className="text-base font-semibold text-slate-300">Répartition du Volume</h3>
-                <p className="mt-0.5 text-xs text-muted-foreground">Virements vs Chèques, en montant traité</p>
+                <p className="mt-0.5 text-xs text-muted-foreground">Par nature d'opération, en montant traité</p>
               </div>
 
               <TwoSliceDonut
@@ -205,19 +242,41 @@ export function OperationsBancaires() {
 
             <Card className="space-y-4 rounded-[1.25rem] border-border bg-card p-4 sm:p-6">
               <div className="border-b border-border pb-2">
-                <h3 className="text-base font-semibold text-slate-300">Causes de Rejet — Chèques</h3>
+                <h3 className="text-base font-semibold text-slate-300">Causes de Rejet</h3>
               </div>
-              <div className="space-y-2 text-xs">
-                {data.causesRejetCheques.map((row) => (
-                  <div key={row.cause} className="flex items-center justify-between gap-2">
-                    <span className="text-muted-foreground">{row.cause}</span>
-                    <span className="tabular-nums text-white">{fmtNum(row.count)}</span>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <span className="block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                    Chèques
+                  </span>
+                  <div className="space-y-2 text-xs">
+                    {data.causesRejetCheques.map((row) => (
+                      <div key={row.cause} className="flex items-center justify-between gap-2">
+                        <span className="text-muted-foreground">{row.cause}</span>
+                        <span className="tabular-nums text-white">{fmtNum(row.count)}</span>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                </div>
+                <div className="space-y-2">
+                  <span className="block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                    Prélèvements
+                  </span>
+                  <div className="space-y-2 text-xs">
+                    {data.causesRejetPrelevements.map((row) => (
+                      <div key={row.cause} className="flex items-center justify-between gap-2">
+                        <span className="text-muted-foreground">{row.cause}</span>
+                        <span className="tabular-nums text-white">{fmtNum(row.count)}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
             </Card>
           </div>
         </div>
+
+        <DailyCashOps agency={agency} />
       </main>
     </>
   );

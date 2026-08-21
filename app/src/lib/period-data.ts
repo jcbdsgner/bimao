@@ -305,13 +305,20 @@ export const positionNetteByPeriod = byPeriodAndAgency((period, agency) => {
 });
 
 // ---------------------------------------------------------------------------
-// Opérations Bancaires — Virements & Chèques (page OperationsBancaires)
+// Opérations Bancaires — Virements, Chèques, Prélèvements & Effets de Commerce
+// (page OperationsBancaires)
 // ---------------------------------------------------------------------------
 const chequesRejetCausesBase = [
   { cause: "Provision insuffisante", count: 13 },
   { cause: "Signature non conforme", count: 5 },
   { cause: "Compte clôturé", count: 2 },
   { cause: "Opposition", count: 2 },
+];
+
+const prelevementsRejetCausesBase = [
+  { cause: "Provision insuffisante", count: 9 },
+  { cause: "Mandat révoqué", count: 3 },
+  { cause: "Compte clôturé", count: 1 },
 ];
 
 export const operationsBancairesByPeriod = byPeriodAndAgency((period, agency) => {
@@ -324,11 +331,26 @@ export const operationsBancairesByPeriod = byPeriodAndAgency((period, agency) =>
   const chequesEncaisses = { count: flow(298, period, agency), montantMds: flow(8.1, period, agency, 1) };
   const chequesRejetes = { count: flow(22, period, agency), montantMds: flow(0.6, period, agency, 1) };
 
+  const prelevementsEmis = { count: flow(410, period, agency), montantMds: flow(6.4, period, agency, 1) };
+  const prelevementsRejetes = { count: flow(13, period, agency), montantMds: flow(0.2, period, agency, 1) };
+
+  const effetsDomicilies = { count: flow(58, period, agency), montantMds: flow(3.1, period, agency, 1) };
+  const effetsEncaisses = { count: flow(49, period, agency), montantMds: flow(2.6, period, agency, 1) };
+  const effetsImpayes = { count: flow(6, period, agency), montantMds: flow(0.3, period, agency, 1) };
+
   const tauxRejetVirements =
     virementsEmis.count > 0 ? round((virementsRejetes.count / virementsEmis.count) * 100, 2) : 0;
   const tauxRejetCheques = chequesEmis.count > 0 ? round((chequesRejetes.count / chequesEmis.count) * 100, 2) : 0;
+  const tauxRejetPrelevements =
+    prelevementsEmis.count > 0 ? round((prelevementsRejetes.count / prelevementsEmis.count) * 100, 2) : 0;
+  const tauxImpayesEffets =
+    effetsDomicilies.count > 0 ? round((effetsImpayes.count / effetsDomicilies.count) * 100, 2) : 0;
 
   const causesRejetCheques = chequesRejetCausesBase.map((row) => ({
+    ...row,
+    count: Math.max(flow(row.count, period, agency), row.count > 0 ? 1 : 0),
+  }));
+  const causesRejetPrelevements = prelevementsRejetCausesBase.map((row) => ({
     ...row,
     count: Math.max(flow(row.count, period, agency), row.count > 0 ? 1 : 0),
   }));
@@ -336,7 +358,10 @@ export const operationsBancairesByPeriod = byPeriodAndAgency((period, agency) =>
   const volumeByType = [
     { type: "Virements", montant: round(virementsEmis.montantMds + virementsRecus.montantMds, 1) },
     { type: "Chèques", montant: round(chequesEmis.montantMds + chequesEncaisses.montantMds, 1) },
+    { type: "Prélèvements", montant: prelevementsEmis.montantMds },
+    { type: "Effets de Commerce", montant: effetsDomicilies.montantMds },
   ];
+  const volumeTotalMds = round(volumeByType.reduce((sum, row) => sum + row.montant, 0), 1);
 
   return {
     virementsEmis,
@@ -349,9 +374,18 @@ export const operationsBancairesByPeriod = byPeriodAndAgency((period, agency) =>
     chequesRejetes,
     tauxRejetCheques,
     causesRejetCheques,
+    prelevementsEmis,
+    prelevementsRejetes,
+    tauxRejetPrelevements,
+    causesRejetPrelevements,
+    effetsDomicilies,
+    effetsEncaisses,
+    effetsImpayes,
+    tauxImpayesEffets,
     volumeByType,
-    volumeTotalMds: round(volumeByType[0].montant + volumeByType[1].montant, 1),
-    operationsTotalCount: virementsEmis.count + virementsRecus.count + chequesEmis.count,
+    volumeTotalMds,
+    operationsTotalCount:
+      virementsEmis.count + virementsRecus.count + chequesEmis.count + prelevementsEmis.count + effetsDomicilies.count,
   };
 });
 
